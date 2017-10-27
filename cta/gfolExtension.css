@@ -1,0 +1,90 @@
+
+
+ul.CTAmenu[data-brand="gfol"] > li.CTAlist > a.CTAbutton:hover{
+  background: initial;
+  color:initial;
+}
+
+/*font colors*/
+/* GFOL style #1 :: gfol light blue*/
+ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="gfol blue"] a{ /* edits for the spring */
+  color: #a6bccf;
+  border-color:#a6bccf;
+}
+
+  ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="gfol blue"] a:hover{
+    color: #fff !important;
+    border-color:#a6bccf;
+    background: #a6bccf;
+  }
+
+/* GFOL style #1a :: gfol coral*/
+ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="gfol coral"] a{ /* edits for the spring */
+  color: #f39995;
+  border-color:#f39995;
+}
+  ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="gfol coral"] > a.CTAbutton:hover{
+    background: #f39995;
+    color:#fff;
+  }
+  ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="gfol coral"] > ul.CTAdropdownList > li a:hover{
+    border-color:#f39995;
+    background:#f39995;
+    color: #fff;
+  }
+
+/* GFOL style #3 :: gfol white*/
+ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="white"] a,
+ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="white"] a:hover{ /* edits for the spring */
+  color: #fff;
+  border-color:#fff;
+}
+
+
+
+/*GFOL style #4 */
+ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="white"][data-hover="gap blue"] > a.CTAbutton:hover {
+  border-color: #fff;
+  color: #fff;
+}
+ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="white"][data-hover="gap blue"] > ul.CTAdropdownList > li a{
+  background:#fff;
+  color:#000d42;
+  border-color:#fff;
+}
+
+ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="white"][data-hover="gap blue"] > ul.CTAdropdownList > li:not(:first-child) a {
+    border-top: 1px solid black !important;
+}
+ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="white"][data-hover="gap blue"] > ul.CTAdropdownList > li a:hover{
+  border-color:#fff;
+  background:#000d42;
+  color: #fff;
+}
+ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="white"][data-hover="gap blue inverse"] > ul.CTAdropdownList > li a:hover{
+  border-color:#fff;
+  background:#fff;
+  color: #000d42;
+}
+@media (max-width: 768px){
+  ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="white"] > a.CTAbutton,
+  ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="white"] a,
+  ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="white"] > ul.CTAdropdownList > li a{
+    color:#000d42 !important;
+    border-color:#000d42 !important;
+    /*background: #fff;*/
+  }
+}
+
+
+/*GFOL style #5 */
+ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="gfol red"] > ul.CTAdropdownList > li a,
+ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="gfol red"] > a.CTAbutton,
+ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="gfol red"] > a.CTAbutton:hover{
+  color: #df1d3c;
+  border-color:#df1d3c;
+}
+ul.CTAmenu[data-brand="gfol"] > li.CTAlist[data-color="gfol red"] > ul.CTAdropdownList > li a:hover{
+  color:#fff;
+  background: #df1d3c;
+}

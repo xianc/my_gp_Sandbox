@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .bgDefault {
+        width: 100%;
+        max-width: 800px;
+        background: url(bg.gif);
+        display: inline-block;
+      }
+      .bgScale{
+        width: 100%;
+        max-width: 800px;
+        background: url(bg.gif);
+        display: inline-block;
+        background-size:3.9%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Tile Backgrounds </h1>
+    <strong>1. Default:</strong> as image scales, the background pattern clips away
+    <br>
+    <div class="bgDefault">
+      <img src="svg.svg" alt="svg"/>
+    </div>
+    <br>
+    <strong>2. Scale:</strong> as image scales, the bg also scales
+    <br>
+    <div class="bgScale">
+      <img src="svg.svg" alt="svg"/>
+    </div>
+
+
+  </body>
+</html>

@@ -1,0 +1,268 @@
+html,
+body{
+	height:100%;
+	margin:0;
+}
+.clear{
+	clear:both;
+}
+
+#paceContainer,.paceVideoPlaceholder,img#paceMainVideoPlaceholderImg, .full_desktop, #suhathaVideo{
+	position:relative;
+	width:100%;
+	max-width: 1280px;
+	min-width: 990px;
+}
+	
+	#paceContainer{
+		position:relative;
+		margin:0 auto;
+		color: #999999;
+		font-family: Helvetica, Arial, sans-serif !important;
+	}
+
+	#paceContainer a{
+		font-weight: 100;
+		color:#95CF3E;
+		text-decoration: none;
+	}
+	#paceContainer a:hover{
+		font-weight: 100;
+		color:#C1C1C1;
+		text-decoration: none;
+}
+
+.full_mobile{
+	width:100%;
+	max-width: 600px;
+}
+
+
+/*PACE Video Styles */
+#paceContainer header{
+	position:relative;
+	width:auto;
+	height:auto;
+}
+
+
+	#paceVideoPlaceholder{
+		position: relative;
+	}
+
+	#suhathaVideo{
+		z-index:11;
+		max-height: 725px
+	}
+	.paceVideoPlayButton,.videoPlayButton{
+		width: 76px;
+		height: 76px;
+		background:url(PACE_1MW_WEB_release/GRAPHICS/PLAYBUTTON_Main.png);
+		position:absolute;
+		z-index: 10;
+		transition: all .5s ease;
+		cursor: pointer;
+	}
+	.paceVideoPlayButton{
+		bottom:15%;
+		left:48%;
+	}
+	.videoPlayButton{
+		bottom:40%;
+		left:48%;
+	}
+
+	.paceVideoPlayButton:hover,.videoPlayButton:hover{
+		background:url(PACE_1MW_WEB_release/GRAPHICS/PLAYBUTTON_Rollover.png);
+	}
+
+	#backToStory{
+		display:none;
+		padding: .6% 1%;
+    	text-align: right;
+    	cursor: pointer;
+    	font-weight: bold;
+	}
+
+
+
+
+/* Pace Logo & Quick Facts */
+
+#paceIntro{
+	width:100%;
+	margin-top: 40px;
+}
+
+	#paceIntroWrapperRight{
+		float:right;
+		width:35%;
+		max-width: 458px;
+		overflow: auto;
+		text-align: center;
+	}
+
+	#paceIntroWrapperRight #paceLogo{
+		display:inline-block;
+		margin:0 auto;
+		margin-bottom:20px;
+	}
+
+	img#paceLogo{
+		width:100%;
+		max-width:177px;
+	}
+
+	a#paceQuickFactsLink{
+		cursor: pointer;
+	}
+
+	a#paceQuickFactsLink,
+	img#paceLogo{
+		display: block;
+	}
+/* End Pace Logo & Quick Facts */
+
+
+/* Pace Headline Uncollapsed Content */
+	#paceIntroWrapperLeft{
+		width:65%;
+		float:left;
+	}
+	#paceIntroWrapperLeft #paceIntroContent{
+		margin-left:12%;
+	}
+
+	#paceIntroWrapperLeft img#paceIntroHead{
+		width:100%;
+		max-width: 719px;
+	}
+
+/* End Pace Headline Uncollapsed Content */
+
+
+/* Pace Collapsed Quick Facts */
+#paceQuickFactsWrapper p,
+	#paceIntro p{
+		font-size: 1.3em;
+		line-height: 1.3em;
+		font-weight: 100;
+		margin-top:20px;
+		padding: 0;
+	}
+
+	#paceQuickFactsWrapper{
+		display:none;
+	}
+
+	hr#paceQuickFactsDivider{
+		max-width:1088px;
+		border: 0;
+    	border-bottom: 1px #c1c1c1 solid;
+    	margin:0 auto;
+    	margin-bottom: 70px;
+    	margin-top: 8%;
+    	margin-bottom:8%;
+	}
+
+	#paceQuickFactsWrapper h1{
+		font-size: 1.5em;
+		color: #95CF3E;
+		font-weight: 500;
+	}
+	#pacePartners{
+		text-align: center;
+		font-size: 1.4em;
+		line-height: 1.5em;
+
+	}
+		.pacePartnerLogo{
+			margin:5px;
+		}
+		hr.pacePartnerLogoDivider{
+			max-width:132px;
+			border: 0;
+	    	border-bottom: 1px #c1c1c1 solid;
+		}
+
+
+	#paceFactsWrapper{
+		width:100%;
+		height: 420px;
+		display:block;
+		margin-top:6%;
+	}
+		#paceFactsWrapper .paceFacts{
+			width:23%;
+			height: 100%;
+			float:left;
+			border-right:1px solid #c1c1c1;
+		}
+
+		#paceFactsWrapper .paceFacts:last-child{
+			border-right: 0px;
+		}
+		#paceFactsWrapper .paceFacts img{
+			width: 100%;
+    		max-width: 282px;
+		}
+
+		#paceFactsWrapper .paceFacts .paceFactsBurb{
+			text-align: center;
+			font-size: 1em;
+			line-height: 1.2em;
+			margin:12%;
+			max-width: 212px;
+		}
+/* End Pace Collapsed Quick Facts */
+
+#paceQuickFactsWrapper footer{
+	margin-top:3%;
+	width: 100%;
+	text-align: center;
+}
+
+	#paceQuickFactsWrapper footer p{
+		font-size: .9em;
+		margin-top:10px;
+	}
+
+	#paceQuickFactsWrapper footer a{
+		font-weight: 600;
+	}
+
+/*Social Network Share */
+#socialWrapper{
+	text-align: center;
+	margin-top:1%;
+}
+.shareSocial{
+	width:47px;
+	height:47px;
+	display:inline-block;
+	border:0;
+	cursor: pointer;
+	transition: all .5s ease;
+}
+	.shareSocial#instagram{
+		border:0;
+		background-image: url(PACE_1MW_WEB_release/GRAPHICS/SHARE_Instagram_Main.png)
+	}
+	.shareSocial#instagram:hover{
+		background-image: url(PACE_1MW_WEB_release/GRAPHICS/SHARE_Instagram_Rollover.png)
+	}
+
+	.shareSocial#facebook{
+		border:0;
+		background-image: url(PACE_1MW_WEB_release/GRAPHICS/SHARE_Facebook_Main.png)
+	}
+	.shareSocial#facebook:hover{
+		background-image: url(PACE_1MW_WEB_release/GRAPHICS/SHARE_Facebook_Rollover.png)
+	}
+	.shareSocial#twitter{
+		border:0;
+		background-image: url(PACE_1MW_WEB_release/GRAPHICS/SHARE_Twitter_Main.png)
+	}
+	.shareSocial#twitter:hover{
+		background-image: url(PACE_1MW_WEB_release/GRAPHICS/SHARE_Twitter_Rollover.png)
+	}

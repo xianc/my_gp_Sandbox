@@ -1,0 +1,783 @@
+
+/*========================================================================================
+              CTA DROPDOWN & ACORDIAN
+========================================================================================*/
+.CTAmenu, 
+.CTAbutton,
+.plusMinus, 
+.caret, 
+.pipe,.pipe-at-md,.pipe-at-lg{
+  display:inline-block;
+  position:relative;
+} 
+
+@media(min-width:768px){
+  .wrapperCTA {
+    /*display: inline-block;*/
+    display: inline;
+    white-space: nowrap;
+  }
+}
+
+.CTAmenu *{
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  text-transform:uppercase;
+  text-decoration: none;
+
+  font-size:1em;
+  letter-spacing:1px;
+  font-weight: 500;
+  
+}
+.CTAmenu{
+  margin-top:.5em;
+  padding: 0;
+  display:inline-block;
+
+  list-style:none; 
+}
+
+/* button name */
+.CTAlist .CTAbutton {
+  padding: 1em;
+  border:2px solid;
+  box-sizing: border-box;
+  text-align: center;
+}
+.CTAlist *{
+  color:#000d42;
+}
+.CTAlist{
+  float:left;
+  /*padding-right:1em;*/
+  border-right: 1em solid transparent;
+}
+@media (min-width:768px){
+  .CTAlist{
+    /*border-right: 1em solid transparent;*/
+    /*box-sizing: border-box;*/
+  }
+  .CTAlist[data-style="inline list"] ul, .CTAlist[data-style="inline list"] ul li, .CTAlist[data-style="inline list"] ul li a,
+  .CTAlist[data-style-at-lg="inline list"] ul, .CTAlist[data-style-at-lg="inline list"] ul li, .CTAlist[data-style-at-lg="inline list"] ul li a{
+    margin-bottom: 1.5%;
+  }
+}
+/* Dropdown menu position */
+.CTAmenu ul {
+  list-style: none; 
+  padding:0;
+
+  top: 3.45em;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+
+  transition: all .2s;
+  cursor:default;
+}
+
+.show-menu ul {
+  left: 0;
+  opacity: 1;
+  pointer-events: auto;
+  cursor:pointer;
+}
+@media (min-width:768px){
+  .CTAmenu li a:hover + ul,
+  .CTAmenu li a:focus + ul,
+  .CTAmenu li ul:hover, 
+  .CTAmenu li ul:focus{
+    left: 0;
+    opacity: 1;
+    pointer-events: auto;
+    cursor:pointer;
+  }
+}
+@media (max-width:767px){
+  .CTAmenu ul{
+    height:0;
+  }
+
+  .CTAmenu .show-menu ul{
+    height:auto;
+  }
+  .show-menu .CTAdropdownList { /* overriding some unknown inline styles that appends when dropdown is clicked */
+    display: block !important;
+  }
+}
+
+/* dropdown style */
+.CTAmenu li > a {
+  display:block; 
+  border:2px solid;
+  box-sizing: border-box;
+  padding:1em;
+  margin-top:-2px;
+}
+
+
+/* hover states */
+.CTAlist a:hover,
+.CTAlist a:focus,
+.CTAlist a:hover *,
+.CTAlist a:focus *{
+  text-decoration: none;
+  background-color: transparent;
+  color:#fff;
+  /*border-color:#000d42;*/
+  /*background-color:#000d42;*/
+  border-color:#000;
+  background-color:#000;
+}
+
+
+
+/*================================ SYMBOL ADD ONS ============================================*/
+
+/*======= plus minus =========*/
+.CTAbutton .plusMinus{
+  width: 1em;
+  padding:0;
+}
+.CTAbutton .plusMinus::before{
+  content: '+';
+}
+
+@media (min-width:768px){
+  .CTAbutton:hover .plusMinus::before{
+    content: '-';
+  }
+ /*button half */
+  .CTAmenu[data-size="half"]{
+    display:inline;
+    width:100%;
+  }
+}
+@media (max-width:767px){
+  .show-menu .CTAbutton .plusMinus::before{
+    content: '-';
+  } 
+  .CTAmenu[data-size="half dropdown"]{
+    display:inline-block;
+    width:46%;
+    margin:1% 2%;
+    float:left;
+  }
+  .CTAmenu[data-size="half dropdown"] .CTAlist{
+    width:100%;
+  }
+}
+/*======== caret =========*/
+.caret{
+  margin-left:5px;
+  border:#000d42 5px solid;
+  border-color:transparent transparent transparent #000d42 !important;
+}
+/*=======pipe========*/
+.pipe::before{
+  content: '|';
+  padding-right: .5em;
+  float:left;
+}
+
+
+@media (min-width:768px){
+  .pipe-at-lg::before{
+    content: '|';
+    padding-right: .5em;
+    float:left;
+  }
+  .pipe-at-md{
+    display:none;
+  }
+}
+
+@media (max-width:767px){
+  .pipe-at-md::before{
+    content: '|';
+    padding-right: .5em;
+    float:left;
+  }
+  .pipe-at-lg{
+    display:none;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*================================ COPY AND BORDER COLORS ============================================*/
+.CTAlist[data-color="white"] *{
+  color: #fff;
+  border-color:#fff;
+}
+.CTAlist[data-color="white"] a:hover,
+.CTAlist[data-color="white"] a:focus,
+.CTAlist[data-color="white"] a:hover *,
+.CTAlist[data-color="white"] a:focus *{
+  background-color:#fff;
+  border-color: #fff;
+  color:#000;
+}
+
+.CTAlist[data-color="gap blue"] *{
+  color: #000d42;
+  border-color:#000d42;
+}
+.CTAlist[data-color="gap blue"] a:hover,
+.CTAlist[data-color="gap blue"] a:focus,
+.CTAlist[data-color="gap blue"] a:hover *,
+.CTAlist[data-color="gap blue"] a:focus *{
+  background-color:#000d42;
+  border-color:#000d42;
+  color:#fff;
+}
+
+.CTAlist[data-color="black"] *{
+  color: #000;
+  border-color:#000;
+}
+.CTAlist[data-color="black"] a:hover,
+.CTAlist[data-color="black"] a:focus,
+.CTAlist[data-color="black"] a:hover *,
+.CTAlist[data-color="black"] a:focus *{
+  background-color:#000;
+  border-color:#000;
+  color:#fff;
+}
+
+              @media (min-width: 768px){
+                .CTAlist[data-color-at-lg="white"] *{
+                  color: #fff;
+                  border-color:#fff;
+                }
+                .CTAlist[data-color-at-lg="white"] a:hover,
+                .CTAlist[data-color-at-lg="white"] a:focus,
+                .CTAlist[data-color-at-lg="white"] a:hover *,
+                .CTAlist[data-color-at-lg="white"] a:focus *{
+                  background-color:#fff;
+                  border-color: #fff;
+                  /*color:#fff;*/
+                }
+
+                .CTAlist[data-color-at-lg="black"] *{
+                  color: #000;
+                  border-color:#000;
+                }
+                .CTAlist[data-color-at-lg="black"] a:hover,
+                .CTAlist[data-color-at-lg="black"] a:focus,
+                .CTAlist[data-color-at-lg="black"] a:hover *,
+                .CTAlist[data-color-at-lg="black"] a:focus *{
+                  background-color:#000;
+                  border-color:#000;
+                  color:#fff;
+                }
+              }
+              @media (max-width: 767px){
+                .CTAlist[data-color-at-md="white"] *{
+                  color: #fff;
+                  border-color:#fff;
+                }
+                .CTAlist[data-color-at-md="white"] a:hover,
+                .CTAlist[data-color-at-md="white"] a:focus,
+                .CTAlist[data-color-at-md="white"] a:hover *,
+                .CTAlist[data-color-at-md="white"] a:focus *{
+                  color:#000;
+                  background-color:#fff;
+                  border-color: #fff;
+                }
+
+                .CTAlist[data-color-at-md="black"] *{
+                  color: #000;
+                  border-color:#000;
+                }
+                .CTAlist[data-color-at-md="black"] a:hover,
+                .CTAlist[data-color-at-md="black"] a:focus,
+                .CTAlist[data-color-at-md="black"] a:hover *,
+                .CTAlist[data-color-at-md="black"] a:focus *{
+                  background-color:#000;
+                  border-color:#000;
+                  color:#fff;
+                }
+              }
+
+
+
+/*background color */
+.CTAlist[data-background="transparent"] a{
+  background-color: transparent;
+}
+.CTAlist[data-background="translucent black"] ul li,
+.CTAlist[data-background="translucent black"] .CTAbutton{
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.CTAlist[data-background="translucent white"] ul li,
+.CTAlist[data-background="translucent white"] .CTAbutton{
+  background-color: rgba(255, 255, 255, 0.5);
+}
+.CTAlist[data-background="white"] a{
+  background-color: #fff;
+}
+.CTAlist[data-background="gap blue"] a{
+  background-color: #000d42;
+}
+.CTAlist[data-background="black"] a{
+  background-color: #000;
+}
+
+
+
+
+ /* no border */
+.CTAlist[data-border="none"] *{
+  border:0;
+}
+.CTAlist[data-border="none"] li > a{
+  padding:.5em 1em;
+}
+.CTAlist[data-border="none"] a:hover,
+.CTAlist[data-border="none"] a:focus,
+.CTAlist[data-border="none"] a:hover *,
+.CTAlist[data-border="none"] a:focus *{
+  background: none;
+}
+
+            @media (min-width: 768px){
+              .CTAlist[data-border-at-lg="none"] *{
+                border:0;
+              }
+              .CTAlist[data-border-at-lg="none"] li > a{
+                padding:.5em 1em;
+              }
+              .CTAlist[data-border-at-lg="none"] a:hover,
+              .CTAlist[data-border-at-lg="none"] a:focus,
+              .CTAlist[data-border-at-lg="none"] a:hover *,
+              .CTAlist[data-border-at-lg="none"] a:focus *{
+                background: none;
+              }
+            }
+            @media (max-width: 767px){
+              .CTAlist[data-border-at-md="none"] *{
+                border:0;
+              }
+              .CTAlist[data-border-at-md="none"] li > a{
+                padding:.5em 1em;
+              }
+              .CTAlist[data-border-at-md="none"] a:hover,
+              .CTAlist[data-border-at-md="none"] a:focus,
+              .CTAlist[data-border-at-md="none"] a:hover *,
+              .CTAlist[data-border-at-md="none"] a:focus *{
+                background: none;
+              }
+            }
+
+
+
+/* no hover */
+.CTAlist[data-hover="none"] li > a:hover,
+.CTAlist[data-hover="none"] li > a:focus,
+.CTAlist[data-hover="none"] a:hover,
+.CTAlist[data-hover="none"] a:focus,
+.CTAlist[data-hover="none"] a:hover *,
+.CTAlist[data-hover="none"] a:focus *{
+  background: initial;
+  color:inherit!important;
+}
+.CTAlist[data-background="white"][data-hover="none"] a:link,
+.CTAlist[data-background="white"][data-hover="none"] a:hover,
+.CTAlist[data-background="white"][data-hover="none"] a:focus, 
+.CTAlist[data-background="white"][data-hover="none"] a:active {
+  background: #fff;
+}
+
+.CTAlist[data-background="gap blue"][data-hover="none"] a:link,
+.CTAlist[data-background="gap blue"][data-hover="none"] a:hover,
+.CTAlist[data-background="gap blue"][data-hover="none"] a:focus, 
+.CTAlist[data-background="gap blue"][data-hover="none"] a:active{
+  background-color: #000d42;
+}
+.CTAlist[data-background="black"][data-hover="none"] a:link,
+.CTAlist[data-background="black"][data-hover="none"] a:hover,
+.CTAlist[data-background="black"][data-hover="none"] a:focus, 
+.CTAlist[data-background="black"][data-hover="none"] a:active{
+  background-color: #000;
+}
+
+
+
+/*================================ LIST STYLES ============================================*/
+.CTAlist[data-style="list"] .CTAbutton,
+.CTAlist[data-style="inline list"] .CTAbutton{
+  display:none;
+}
+.CTAlist[data-style="list"] ul, 
+.CTAlist[data-style="inline list"] ul{
+  left: 0;
+  opacity: 1;
+  pointer-events: auto !important;
+}
+.CTAlist[data-list-style="inline-block"] li{
+  padding-top:.7em;
+}
+.CTAlist[data-list-style="inline-block"] li a{
+  display:inline-block;
+}
+
+.CTAlist[data-style="inline list"]{
+  float:none;
+}
+.CTAlist[data-style="inline list"] ul,
+.CTAlist[data-style="inline list"] ul li, 
+.CTAlist[data-style="inline list"] ul li a{
+  display: inline-block;
+}
+
+
+              @media (min-width: 768px){
+                .CTAlist[data-style-at-lg="list"] .CTAbutton, .CTAlist[data-style-at-lg="inline list"] .CTAbutton{ display:none; }
+                .CTAlist[data-style-at-lg="list"] ul, .CTAlist[data-style-at-lg="inline list"] ul{
+                  left: 0;
+                  opacity: 1;
+                  pointer-events: auto !important;
+                }
+
+                .CTAlist[data-style-at-lg="inline list"]{ float:none; }
+                .CTAlist[data-style-at-lg="inline list"] ul,.CTAlist[data-style-at-lg="inline list"] ul li, .CTAlist[data-style-at-lg="inline list"] ul li a{
+                  display: inline-block;
+                }
+                .CTAlist[data-list-style-at-lg="inline-block"] li{
+                  padding-top:.7em;
+                }
+                .CTAlist[data-list-style-at-lg="inline-block"] li a{
+                  display:inline-block;
+                }
+              }
+              @media (max-width: 767px){
+                .CTAlist[data-style-at-md="list"] .CTAbutton, .CTAlist[data-style-at-md="inline list"] .CTAbutton{ 
+                  display:none; }
+                .CTAlist[data-style-at-md="list"] ul, .CTAlist[data-style-at-md="inline list"] ul{
+                  left: 0;
+                  opacity: 1;
+                  pointer-events: auto !important;
+                }
+
+
+                .CTAlist[data-style-at-md="inline list"]{ float:none; }
+                .CTAlist[data-style-at-md="inline list"] ul,.CTAlist[data-style-at-md="inline list"] ul li, .CTAlist[data-style-at-md="inline list"] ul li a{
+                  display: inline-block;
+                }
+
+                .CTAlist[data-list-style-at-md="inline-block"] li{
+                  padding-top:.7em;
+                }
+                .CTAlist[data-list-style-at-md="inline-block"] li a{
+                  display:inline-block;
+                }
+              }
+
+
+/* spacings */
+.CTAlist[data-padding="bottom 1em"] li{
+  padding-bottom:1em;
+} 
+.CTAlist[data-padding="top 1em"] li{
+  padding-top:1em;
+
+}              @media (min-width: 768px){
+                .CTAlist[data-padding-at-lg="bottom 1em"] li{
+                  padding-bottom:1em;
+                } 
+                .CTAlist[data-padding-at-lg="top 1em"] li{
+                  padding-top:1em;
+                }
+              }
+              @media (max-width: 767px){
+                .CTAlist[data-padding-at-md="bottom 1em"] li{
+                  padding-bottom:1em;
+                } 
+                .CTAlist[data-padding-at-md="top 1em"] li{
+                  padding-top:1em;
+                }
+              }
+
+
+
+/*================================ SEPARATORS ============================================*/
+
+ /* stylzed separators */
+.CTAlist[data-border="dividers"] ul li{
+  margin:0 !important;
+}
+.CTAlist[data-border="dividers"] ul li a{
+  border-left: 0;
+  border-right: 0;
+  padding: 1em 0;
+}
+.CTAlist[data-border="dividers"] a:hover,
+.CTAlist[data-border="dividers"] a:focus,
+.CTAlist[data-border="dividers"] a:hover *,
+.CTAlist[data-border="dividers"] a:focus *{
+  background: none;
+}
+
+          @media (min-width: 768px){
+            .CTAlist[data-border-at-lg="dividers"] ul li{
+                margin:0 !important;
+              }
+              .CTAlist[data-border-at-lg="dividers"] ul li a{
+                border-left: 0;
+                border-right: 0;
+                padding: 1em 0;
+              }
+              .CTAlist[data-border-at-lg="dividers"] a:hover,
+              .CTAlist[data-border-at-lg="dividers"] a:focus,
+              .CTAlist[data-border-at-lg="dividers"] a:hover *,
+              .CTAlist[data-border-at-lg="dividers"] a:focus *{
+                background: none;
+              }
+          }
+          @media (max-width: 767px){
+              .CTAlist[data-border-at-md="dividers"] ul li{
+                margin:0 !important;
+              }
+              .CTAlist[data-border-at-md="dividers"] ul li a{
+                border-left: 0;
+                border-right: 0;
+                padding: 1em 0;
+              }
+              .CTAlist[data-border-at-md="dividers"] a:hover,
+              .CTAlist[data-border-at-md="dividers"] a:focus,
+              .CTAlist[data-border-at-md="dividers"] a:hover *,
+              .CTAlist[data-border-at-md="dividers"] a:focus *{
+                background: none;
+              }
+          }
+
+
+
+/* PIPE SEPARATORS */
+.CTAlist[data-pipes="true"] li:not(:first-child) a::before{
+  content: '|';
+  padding-right: 1em;
+  margin-left: -1em;
+}
+/* no hover */
+.CTAlist[data-pipes="true"] li > a:hover, .CTAlist[data-pipes-at-lg="true"] li > a:hover, .CTAlist[data-pipes-at-md="true"] li > a:hover,
+.CTAlist[data-pipes="true"] li > a:focus, .CTAlist[data-pipes-at-lg="true"] li > a:focus, .CTAlist[data-pipes-at-md="true"] li > a:focus,
+.CTAlist[data-pipes="true"] a:hover, .CTAlist[data-pipes-at-lg="true"] a:hover, .CTAlist[data-pipes-at-md="true"] a:hover,
+.CTAlist[data-pipes="true"] a:focus, .CTAlist[data-pipes-at-lg="true"] a:focus, .CTAlist[data-pipes-at-md="true"] a:focus,
+.CTAlist[data-pipes="true"] a:hover *, .CTAlist[data-pipes-at-lg="true"] a:hover *, .CTAlist[data-pipes-at-md="true"] a:hover *,
+.CTAlist[data-pipes="true"] a:focus *, .CTAlist[data-pipes-at-lg="true"] a:focus *, .CTAlist[data-pipes-at-md="true"] a:focus *{
+  background: initial;
+  color:initial!important;
+}
+
+
+          @media (min-width: 768px){
+            .CTAlist[data-pipes-at-lg="true"] li:not(:first-child) a::before{
+              content: '|';
+              padding-right: 1em;
+              margin-left: -1em;
+            }
+          }
+          @media (max-width: 767px){
+            .CTAlist[data-pipes-at-md="true"] li:not(:first-child) a::before{
+              content: '|';
+              padding-right: 1em;
+              margin-left: -1em;
+            }
+          }
+
+
+
+
+
+/*================================ FONT SIZES ============================================*/        
+
+@media (min-width:1400px){
+  .wrapperCTA[data-font="80"]{ /*16px*/
+    font-size: 11.2px !important;
+  }
+  .wrapperCTA[data-font="90"]{ /*16px*/
+    font-size: 12.5px !important;
+  }
+  .wrapperCTA, 
+  .wrapperCTA[data-font="100"]{
+    font-size: 14px !important;
+  }
+  .wrapperCTA[data-font="110"]{ /*14px*/
+    font-size: 16px !important;
+  }
+  .wrapperCTA[data-font="120"]{
+    font-size: 18px !important;
+  }
+}
+@media (min-width:768px) and (max-width:1400px){
+  .wrapperCTA[data-font="80"]{ /*16px*/
+    font-size: 11.2px;
+    font-size: .8vw;
+  }
+  .wrapperCTA[data-font="90"]{ /*16px*/
+    font-size: 12.5px;
+    font-size: .9vw;
+  }
+  .wrapperCTA, 
+  .wrapperCTA[data-font="100"]{
+    font-size: 14px;
+    font-size: 1vw;
+  }
+  .wrapperCTA[data-font="110"]{ /*14px*/
+    font-size: 16px;
+    font-size: 1.15vw;
+  }
+  .wrapperCTA[data-font="120"]{
+    font-size: 18px;
+    font-size: 1.25vw;
+  }
+}
+@media (max-width:767px){
+  .wrapperCTA[data-font="80"]{ /*16px*/
+    font-size: 12px;
+  }
+  .wrapperCTA[data-font="90"]{ /*16px*/
+    font-size: 13px;
+  }
+  .wrapperCTA, 
+  .wrapperCTA[data-font="100"]{
+    font-size: 14px;
+  }
+  .wrapperCTA[data-font="110"]{ /*14px*/
+    font-size: 16px;
+  }
+  .wrapperCTA[data-font="120"]{
+    font-size: 18px;
+  }
+}
+
+
+
+/*================================  2 COLUMN / HALF BUTTONS ============================================*/    
+  .CTAmenu[data-size="half"]  > .CTAlist, 
+  .CTAmenu[data-size="half"] > .CTAlist ul li{ 
+    width:48%;
+    margin:1%;
+    padding:0;
+    float:left;
+    text-align: center;
+  }
+
+  .CTAmenu[data-size="half"] > .CTAlist{
+    border:0;
+  }
+  .CTAmenu[data-size="half"] > .CTAlist[data-style="list"],
+  .CTAmenu[data-size="half"] > .CTAlist[data-style="inline list"]{
+    width:100%;
+  }
+  .CTAmenu[data-size="half"] > .CTAlist[data-style="inline list"] ul,
+  .CTAmenu[data-size="half"] > .CTAlist[data-style="inline list"] ul li,
+  .CTAmenu[data-size="half"] > .CTAlist[data-style="inline list"] ul li a{
+    display: block;
+  }
+ .CTAmenu[data-size="half"] > .CTAdropdownList,  .CTAlist[data-style="list"] .CTAdropdownList{
+    display:inline;
+  }
+
+
+          @media (min-width: 768px){
+            .CTAmenu[data-size-at-lg="half"] > .CTAlist{
+              border:0;
+            }
+            .CTAmenu[data-size-at-lg="half"] > .CTAlist ul li{ 
+              margin:.4% .5%;
+            }
+            .CTAmenu[data-size-at-lg="half"] > .CTAlist, 
+            .CTAmenu[data-size-at-lg="half"] > .CTAlist ul li{ 
+              width:48%;
+              margin:.4% .5%;
+              padding:0;
+              float:left;
+              text-align: center;
+            }
+            .CTAmenu[data-size-at-lg="half"] > .CTAlist[data-style-at-lg="list"], .CTAmenu[data-size-at-lg="half"] > .CTAlist[data-style-at-lg="inline list"],
+            .CTAmenu[data-size-at-lg="half"] > .CTAlist[data-style="list"], .CTAmenu[data-size-at-lg="half"] > .CTAlist[data-style="inline list"]{
+              width:100%;
+            }
+            .CTAmenu[data-size-at-lg="half"] > .CTAlist[data-style-at-lg="inline list"] ul, .CTAmenu[data-size-at-lg="half"] > .CTAlist[data-style="inline list"] ul,
+            .CTAmenu[data-size-at-lg="half"] > .CTAlist[data-style-at-lg="inline list"] ul li, .CTAmenu[data-size-at-lg="half"] > .CTAlist[data-style="inline list"] ul li,
+            .CTAmenu[data-size-at-lg="half"] > .CTAlist[data-style-at-lg="inline list"] ul li a, .CTAmenu[data-size-at-lg="half"] > .CTAlist[data-style="inline list"] ul li a{
+              display: block;
+            }
+          }
+          @media (max-width: 767px){
+            .CTAmenu[data-size-at-md="half"] > .CTAlist{
+              border:0;
+            }
+            .CTAmenu[data-size-at-md="half"] > .CTAlist, 
+            .CTAmenu[data-size-at-md="half"] > .CTAlist ul li{ 
+              width:48%;
+              margin:1%;
+              padding:0;
+              float:left;
+              text-align: center;
+            }
+            .CTAmenu[data-size-at-md="half"] > .CTAlist[data-style-at-md="list"], .CTAmenu[data-size-at-md="half"] > .CTAlist[data-style-at-md="inline list"],
+            .CTAmenu[data-size-at-md="half"] > .CTAlist[data-style="list"], .CTAmenu[data-size-at-md="half"] > .CTAlist[data-style="inline list"]{
+              width:100%;
+            }
+
+            .CTAmenu[data-size-at-md="half"] > .CTAlist[data-style-at-md="inline list"] ul, .CTAmenu[data-size-at-md="half"] > .CTAlist[data-style="inline list"] ul,
+            .CTAmenu[data-size-at-md="half"] > .CTAlist[data-style-at-md="inline list"] ul li, .CTAmenu[data-size-at-md="half"] > .CTAlist[data-style="inline list"] ul li,
+            .CTAmenu[data-size-at-md="half"] > .CTAlist[data-style-at-md="inline list"] ul li a, .CTAmenu[data-size-at-md="half"] > .CTAlist[data-style="inline list"] ul li a{
+              display: block;
+            }
+
+
+            .CTAmenu[data-size-at-md="half"] > .CTAdropdownList{
+              display:inline;
+            }
+          }
+
+
+@media (max-width: 767px){
+  .wrapperCTA{
+      margin:0 auto;
+  }
+  .CTAmenu {
+    width:96%;
+    margin: 1% 2%;
+  }
+  .CTAlist{
+    width:100%;
+    margin:1% 0;
+  }
+  
+  .CTAlist .CTAbutton{
+    width:100%;
+  }
+
+  .CTAlist ul li{ font-size: .9em;}
+
+
+  .CTAlist[data-style="list"]{
+    width:inherit;
+  }
+  .CTAlist[data-style="list"] .CTAlist{
+    display:inline-block;
+  }
+
+  /*.CTAdropdownList{
+    display: inline;
+  }*/
+  
+  .CTAdropdownList{
+    display:none;
+  }
+}

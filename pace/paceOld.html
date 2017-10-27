@@ -1,0 +1,1903 @@
+<script type="text/javascript">
+/*
+Copyright (c) 2009 Victor Stanciu - http://www.victorstanciu.ro
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+Carousel = Class.create(Abstract, {
+	initialize: function (scroller, slides, controls, options) {
+		this.scrolling	= false;
+		this.scroller	= $(scroller);
+		this.slides		= slides;
+		this.controls	= controls;
+
+		this.options    = Object.extend({
+            duration:           1,
+            auto:               false,
+            frequency:          3,
+            visibleSlides:      1,
+            controlClassName:   'carousel-control',
+            jumperClassName:    'carousel-jumper',
+            disabledClassName:  'carousel-disabled',
+            selectedClassName:  'carousel-selected',
+            circular:           false,
+            wheel:              true,
+            effect:             'scroll',
+            transition:         'sinoidal'
+        }, options || {});
+        
+        if (this.options.effect == 'fade') {
+            this.options.circular = true;
+        }
+
+		this.slides.each(function(slide, index) {
+			slide._index = index;
+        });
+
+		if (this.controls) {
+            this.controls.invoke('observe', 'click', this.click.bind(this));
+        }
+        
+        if (this.options.wheel) {            
+            this.scroller.observe('mousewheel', this.wheel.bindAsEventListener(this)).observe('DOMMouseScroll', this.wheel.bindAsEventListener(this));
+        }
+
+        if (this.options.auto) {
+            this.start();
+        }
+
+		if (this.options.initial) {
+			var initialIndex = this.slides.indexOf($(this.options.initial));
+			if (initialIndex > (this.options.visibleSlides - 1) && this.options.visibleSlides > 1) {               
+				if (initialIndex > this.slides.length - (this.options.visibleSlides + 1)) {
+					initialIndex = this.slides.length - this.options.visibleSlides;
+				}
+			}
+            this.moveTo(this.slides[initialIndex]);
+		}
+	},
+
+	click: function (event) {
+		this.stop();
+
+		var element = event.findElement('a');
+
+		if (!element.hasClassName(this.options.disabledClassName)) {
+			if (element.hasClassName(this.options.controlClassName)) {
+				eval("this." + element.rel + "()");
+            } else if (element.hasClassName(this.options.jumperClassName)) {
+                this.moveTo(element.rel);
+                if (this.options.selectedClassName) {
+                    this.controls.invoke('removeClassName', this.options.selectedClassName);
+                    element.addClassName(this.options.selectedClassName);
+                }
+            }
+        }
+
+		this.deactivateControls();
+
+		event.stop();
+    },
+
+	moveTo: function (element) {
+		if (this.options.beforeMove && (typeof this.options.beforeMove == 'function')) {
+			this.options.beforeMove();
+        }
+
+		this.previous = this.current ? this.current : this.slides[0];
+		this.current  = $(element);
+
+		var scrollerOffset = this.scroller.cumulativeOffset();
+		var elementOffset  = this.current.cumulativeOffset();
+
+		if (this.scrolling) {
+			this.scrolling.cancel();
+		}
+
+        switch (this.options.effect) {
+            case 'fade':               
+                this.scrolling = new Effect.Opacity(this.scroller, {
+                    from:   1.0,
+                    to:     0,
+                    duration: this.options.duration,
+                    afterFinish: (function () {
+                        this.scroller.scrollLeft = elementOffset[0] - scrollerOffset[0];
+                        this.scroller.scrollTop  = elementOffset[1] - scrollerOffset[1];
+
+                        new Effect.Opacity(this.scroller, {
+                            from: 0,
+                            to: 1.0,
+                            duration: this.options.duration,
+                            afterFinish: (function () {
+                                if (this.controls) {
+                                    this.activateControls();
+                                }
+                                if (this.options.afterMove && (typeof this.options.afterMove == 'function')) {
+                                    this.options.afterMove();
+                                }
+                            }).bind(this)
+                        });
+                    }
+                ).bind(this)});
+            break;
+            case 'scroll':
+            default:
+                var transition;
+                switch (this.options.transition) {
+                    case 'spring':
+                        transition = Effect.Transitions.spring;
+                        break;
+                    case 'sinoidal':
+                    default:
+                        transition = Effect.Transitions.sinoidal;
+                        break;
+                }
+
+                this.scrolling = new Effect.SmoothScroll(this.scroller, {
+                    duration: this.options.duration,
+                    x: (elementOffset[0] - scrollerOffset[0]),
+                    y: (elementOffset[1] - scrollerOffset[1]),
+                    transition: transition,
+                    afterFinish: (function () {
+                        if (this.controls) {
+                            this.activateControls();
+                        }
+                        if (this.options.afterMove && (typeof this.options.afterMove == 'function')) {
+                            this.options.afterMove();
+                        }                        
+                        this.scrolling = false;
+                    }).bind(this)});
+            break;
+        }
+
+		return false;
+	},
+
+	prev: function () {
+		if (this.current) {
+			var currentIndex = this.current._index;
+			var prevIndex = (currentIndex == 0) ? (this.options.circular ? this.slides.length - 1 : 0) : currentIndex - 1;
+        } else {
+            var prevIndex = (this.options.circular ? this.slides.length - 1 : 0);
+        }
+
+		if (prevIndex == (this.slides.length - 1) && this.options.circular && this.options.effect != 'fade') {
+			this.scroller.scrollLeft =  (this.slides.length - 1) * this.slides.first().getWidth();
+			this.scroller.scrollTop =  (this.slides.length - 1) * this.slides.first().getHeight();
+			prevIndex = this.slides.length - 2;
+        }
+
+		this.moveTo(this.slides[prevIndex]);
+	},
+
+	next: function () {
+		if (this.current) {
+			var currentIndex = this.current._index;
+			var nextIndex = (this.slides.length - 1 == currentIndex) ? (this.options.circular ? 0 : currentIndex) : currentIndex + 1;
+        } else {
+            var nextIndex = 1;
+        }
+
+		if (nextIndex == 0 && this.options.circular && this.options.effect != 'fade') {
+			this.scroller.scrollLeft = 0;
+			this.scroller.scrollTop  = 0;
+			nextIndex = 1;
+        }
+
+		if (nextIndex > this.slides.length - (this.options.visibleSlides + 1)) {
+			nextIndex = this.slides.length - this.options.visibleSlides;
+		}		
+
+		this.moveTo(this.slides[nextIndex]);
+	},
+
+	first: function () {
+		this.moveTo(this.slides[0]);
+    },
+
+	last: function () {
+		this.moveTo(this.slides[this.slides.length - 1]);
+    },
+
+	toggle: function () {
+		if (this.previous) {
+			this.moveTo(this.slides[this.previous._index]);
+        } else {
+            return false;
+        }
+    },
+
+	stop: function () {
+		if (this.timer) {
+			clearTimeout(this.timer);
+		}
+	},
+
+	start: function () { 
+        this.periodicallyUpdate();
+    },
+
+	pause: function () {
+		this.stop();
+		this.activateControls();
+    },
+
+	resume: function (event) {
+		if (event) {
+			var related = event.relatedTarget || event.toElement;
+			if (!related || (!this.slides.include(related) && !this.slides.any(function (slide) { return related.descendantOf(slide); }))) {
+				this.start();
+            }
+        } else {
+            this.start();
+        }
+    },
+
+	periodicallyUpdate: function () {
+		if (this.timer != null) {
+			clearTimeout(this.timer);
+			this.next();
+        }
+		this.timer = setTimeout(this.periodicallyUpdate.bind(this), this.options.frequency * 1000);
+    },
+    
+    wheel: function (event) {
+        event.cancelBubble = true;
+        event.stop();
+        
+		var delta = 0;
+		if (!event) {
+            event = window.event;
+        }
+		if (event.wheelDelta) {
+			delta = event.wheelDelta / 120; 
+		} else if (event.detail) { 
+            delta = -event.detail / 3;	
+        }        
+       
+        if (!this.scrolling) {
+            this.deactivateControls();
+            if (delta > 0) {
+                this.prev();
+            } else {
+                this.next();
+            }            
+        }
+        
+		return Math.round(delta); //Safari Round
+    },
+
+	deactivateControls: function () {
+		this.controls.invoke('addClassName', this.options.disabledClassName);
+    },
+
+	activateControls: function () {
+		this.controls.invoke('removeClassName', this.options.disabledClassName);
+    }
+});
+
+
+Effect.SmoothScroll = Class.create();
+Object.extend(Object.extend(Effect.SmoothScroll.prototype, Effect.Base.prototype), {
+	initialize: function (element) {
+		this.element = $(element);
+		var options = Object.extend({ x: 0, y: 0, mode: 'absolute' } , arguments[1] || {});
+		this.start(options);
+    },
+
+	setup: function () {
+		if (this.options.continuous && !this.element._ext) {
+			this.element.cleanWhitespace();
+			this.element._ext = true;
+			this.element.appendChild(this.element.firstChild);
+        }
+
+		this.originalLeft = this.element.scrollLeft;
+		this.originalTop  = this.element.scrollTop;
+
+		if (this.options.mode == 'absolute') {
+			this.options.x -= this.originalLeft;
+			this.options.y -= this.originalTop;
+        }
+    },
+
+	update: function (position) {
+		this.element.scrollLeft = this.options.x * position + this.originalLeft;
+		this.element.scrollTop  = this.options.y * position + this.originalTop;
+    }
+});
+
+
+/* http://stackoverflow.com/questions/1910113/offset-height-using-prototype */
+function findPos(div) {
+    var curleft = curtop = 0;
+    if (div.offsetParent) {
+        curleft = div.offsetLeft
+        curtop = div.offsetTop
+        while (div = div.offsetParent) {
+            curleft += div.offsetLeft
+            curtop += div.offsetTop
+        }
+    }
+    return [curleft, curtop];
+}
+
+/* http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport */
+function elementInViewport(el) {
+	var top = el.offsetTop;
+	var left = el.offsetLeft;
+	var width = el.offsetWidth;
+	var height = el.offsetHeight;
+	var viewportHeight = window.innerHeight > 0 ? window.innerHeight : document.documentElement.clientHeight;
+	var viewportWidth = window.innerWidth > 0 ? window.innerWidth : document.documentElement.clientWidth;
+	var windowOffsetY = jQuery(window).scrollTop();
+	var windowOffsetX = jQuery(window).scrollLeft();
+
+	while(el.offsetParent) {
+		el = el.offsetParent;
+		top += el.offsetTop;
+		left += el.offsetLeft;
+	}
+
+	return (
+		top < (windowOffsetY + viewportHeight) &&
+		left < (windowOffsetX + viewportWidth) &&
+		(top + height) > windowOffsetY &&
+		(left + width) > windowOffsetX
+	);
+}
+
+// the sticky (or fixed...) menu!
+// menuID = menu to sticky
+// startID = at this element, the menu should become sticky
+// endID = at this element, the menu should no longer be sticky
+function stickyMenu(menuID, startID, endID) {
+	var menuScrollOffset = $(menuID).cumulativeScrollOffset(); // get how much we have scrolled from menuID
+	var menuTopScrollOffset = menuScrollOffset['top'];
+	var menuHeight = $(menuID).getHeight();
+	// get x,y positions of startID and endID
+	var elementStart = $(startID);
+	var elementStartPos = findPos(elementStart);
+	var elementStartYPos = elementStartPos[1];
+	var elementEnd = $(endID);
+	var elementEndPos = findPos(elementEnd);
+	var elementEndXPos = elementEndPos[0];
+	var elementEndYPos = elementEndPos[1];
+
+	// if we've scrolled passed startID
+	// add the class fixed to the menu
+	if((menuTopScrollOffset) >= (elementStartYPos - 4)) {
+		jQuery("#" + menuID).fadeIn();
+		jQuery("#" + menuID).css({"top":76});
+		$(menuID).addClassName('fixed');
+	} else {
+		jQuery("#" + menuID).fadeOut();
+		jQuery("#" + menuID).css({"top":76});
+		$(menuID).removeClassName('fixed');
+	}
+		
+	// if we've scrolled to the endID
+	// start subtracting from the css style top
+	// as the user continues scrolling.
+	// this creates a look as if the sticky menu
+	// has stopped right at the top of the endID
+	if(menuTopScrollOffset >= ((elementEndYPos - menuHeight) - 76)) {
+		$(menuID).style.top = -(menuHeight - $(endID).getBoundingClientRect()['top']) + "px";
+	} else {
+		jQuery("#" + menuID).css({"top":76});
+	}
+}
+
+function menuCategoryChecker(menuID) {
+	var categoriesArray = new Array();
+	var menuItemSelect = $(menuID).select('li');
+	var lastCategory;
+
+	// iterate through each li item
+	menuItemSelect.each(function(element) {
+		// we cheat here a little by setting
+		// a custom data attribute in our markup.
+		// essentially data-category = elementID
+		// example: <div id="impactCategory"></div>
+		//			<li data-category="impactCategory">..
+		// they must match so we know which category we're seeing
+		var category = element.getAttribute("data-category");
+		element.removeClassName('active');
+
+		if((category != null) && lastCategory != category && elementInViewport($(category))) {
+			element.addClassName('active');
+
+			// two categories can be in view at the same time
+			// to remedy this, we check to see if more than one li
+			// item has an active class, if so...
+			// remove the active class from the last one in the array
+			if($$('#' + menuID + ' .active').length > 1) {
+				$$('#' + menuID + ' .active')[1].removeClassName('active');
+			}
+		}
+
+		lastCategory = category;
+	});
+}
+
+function adjustWidths(elementsArray) {
+	// get the width of the browser window viewport
+	var viewport = document.viewport.getDimensions();
+	var width = viewport.width;
+	var elementsArrayLength = elementsArray.length;
+
+	// loop through the different elements
+	// and set their width to the viewport width
+	// then we offset the left position
+	for(var i=0; i < elementsArrayLength; i++) {
+		$(elementsArray[i]).setStyle({
+			width: width + "px",
+			position: "relative",
+			marginLeft: - (((width - 988)/2) - 1) + "px",
+			overflow: "hidden"
+		});
+	}
+}
+
+//LAUNCH VIDEO PLAYER
+function playPACEVideo1() {
+	if ($('videoThumb01').hasClassName("active"))  {
+		jbox.boxIt({width:640,height:360,url:"/browse/info.do?cid=58451"});
+	}	
+}
+
+function playPACEVideo2() {
+	if ($('videoThumb02').hasClassName("active"))  {
+		jbox.boxIt({width:640,height:360,url:"/browse/info.do?cid=76495"});
+	}
+}
+
+function videoCarousel() {
+	$("videoThumb01").observe("click", function() {
+		if(!this.hasClassName("active")) {
+			this.addClassName("active");
+			$("videoThumb02").removeClassName("active");
+			new Effect.Move($("videoCarouselContent"), {x: +815, duration: 0.7, transition: Effect.Transitions.sinoidal});
+		}
+	});
+
+	$("videoThumb02").observe("click", function() {
+		if(!this.hasClassName("active")) {
+			this.addClassName("active");
+			$("videoThumb01").removeClassName("active");
+			new Effect.Move($("videoCarouselContent"), {x: -815, duration: 0.7, transition: Effect.Transitions.sinoidal});
+		}
+	});
+}
+
+// uncomment "paceHeader" if the header needs to span the full width of the window
+var elementsToAdjustWidthsOfArray = [/*"paceHeader",*/"shareVideoCategory", /*"takeActionCategory",*/ "impactCategory", "photoGalleryCategory", "ourPartnersCategory", "paceFooter"];
+
+Event.observe(window, 'scroll', function() {
+	stickyMenu('paceSideMenu', 'paceContent', 'paceFooter');
+	menuCategoryChecker('paceSideMenu');
+});
+
+Event.observe(window, 'resize', function() {
+	adjustWidths(elementsToAdjustWidthsOfArray);
+});
+
+jQuery(document).ready(function($) {
+	adjustWidths(elementsToAdjustWidthsOfArray);
+	videoCarousel();
+
+	//Video Player Hover
+	$("#videoThumb01").hover(function(){
+		if (!$(this).hasClass("active")) {
+			$(this).animate({ "margin-left": "51px" }, {queue: false});
+		}
+	}, function() {
+		if (!$(this).hasClass("active")) {
+			$(this).animate({ "margin-left": "21px" }, {queue: false});
+		}
+	});
+
+	$("#videoThumb02").hover(function(){
+		if (!$(this).hasClass("active")) {
+			$("#videoThumb01").animate({ "margin-left": "21px" }, {queue: false});
+		}
+	}, function() {
+		if (!$(this).hasClass("active")) {
+			$("#videoThumb01").animate({ "margin-left": "51px" }, {queue: false});
+		}
+	});
+
+	//Circle Share Links Hover
+	$("#share-big-twitter").css('opacity', 0);
+	$("#share-big-fb").css('opacity', 0);
+	$("#share-big-mail").css('opacity', 0);
+
+	function circleShareHover(itemHover,itemMove) {
+		$(itemHover).hover(function() {
+			$(itemMove).stop(true,true).animate({ opacity: 1, "margin-top": "3px" });
+		}, function() {
+			$(itemMove).stop(true,true).animate({ opacity: 0, "margin-top": "0px"});
+		});
+	}
+
+	circleShareHover("#circleTwitter","#share-big-twitter");
+	circleShareHover("#circleFB","#share-big-fb");
+	circleShareHover("#circleEmail","#share-big-mail");
+
+	function sidenavHover(a,b) {
+		$(b).css({opacity:0});
+		$(a).hover(function() {
+			$(b).stop(true,true).animate({ opacity: 1, "margin-top": "+=5px" });
+			this.addClassName("active");
+		}, function() {
+			$(b).stop(true,true).animate({ opacity: 0, "margin-top": "10px"});
+			this.removeClassName("active");
+		});
+	}
+
+	sidenavHover('#social-links','#paceSocialLinks');
+});
+
+jQuery(window).load(function() {
+	// Scroll to section based on URL
+	var pace_shareVideo = gidLib.getQuerystringParam("pace_video");
+
+	if(pace_shareVideo == "true")
+	{
+		//scrollToVideo
+		Effect.ScrollTo('shareVideoCategory');
+	}
+
+	var pace_shareGallery = gidLib.getQuerystringParam("photoGalleryCategory");
+
+	if(pace_shareGallery == "true")
+	{
+		//scrollToPhotoGallery
+		Effect.ScrollTo('photoGalleryCategory');
+	}
+});
+</script>
+
+<style type="text/css">
+/* Re-Usable */
+.hide {
+	position: absolute !important;
+	top: -9999px !important;
+	left: -9999px !important;
+}
+
+.fixed {
+	position: fixed !important;
+}
+
+.clearfix::after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+#paceContainer hr {
+	background: #e4e4e4;
+	border: 0;
+	height: 1px;
+}
+
+/* P.A.C.E. Specific */
+#paceContainer {
+	position: relative;
+	width: 988px;
+	font-family: Helvetica, Arial, sans-serif !important;
+	margin: 0 auto;
+}
+
+#paceHeader {
+	background: #8dc63f;
+	position: relative;
+	overflow: hidden;
+	margin: 0 auto;
+}
+
+#paceHeader .content,
+#paceFooter .content {
+	width: 988px;
+	margin: 0 auto;
+}
+
+#paceLogoHeadlinesContainer {
+	overflow: hidden;
+	background: #fff;
+	margin: 10px 10px 0 10px;
+	height: 170px;
+}
+
+#paceLogo,
+#paceHeadlines {
+	float: left;
+} 
+
+#paceLogo {
+	width: 74px;
+	height: 113px;
+	margin: 18px 47px 33px 183.5px;
+}
+
+#paceHeadlines {
+	width: 500px;	
+	margin: 47px 0 45px 0;
+}
+
+#paceHeadlines .headline {
+	font-size: 24px;
+	color: #95969a;
+	line-height: 20px;
+	padding: 0;
+	margin: 0 0 12px 0;
+}
+
+#paceHeadlines .headline-sub {
+	font-size: 15px;
+	color: #95969a;
+	line-height: 22px;
+	padding: 0;
+	margin: 0;
+}
+
+#paceHeaderMenu {
+	clear: both;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	height: 58px;
+}
+
+#paceHeaderMenu li {
+	display: inline-block;
+	float: left;
+}
+
+#paceHeaderMenu li a {
+	font-size: 12px;
+	display: block;
+	padding: 0 25px;
+	line-height: 58px;
+	border-left: 1px solid #9ecb64;
+	border-right: none;
+	transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-webkit-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+}
+
+#paceHeaderMenu li a.last {
+	border-right: 1px solid #9ecb64;
+}
+
+#paceHeaderMenu li a:hover {
+	background-color: #7bb731;
+}
+
+#paceHeaderMenu .shareVideo {
+	margin-left: 93.5px;
+	background: transparent url('/Asset_Archive/GPWeb/content/0007/763/665/assets/NAV_share_video.png') no-repeat center;
+	width: 89px;
+	height: 58px;
+}
+
+#paceHeaderMenu .takeAction {
+	background: transparent url('/Asset_Archive/GPWeb/content/0007/763/665/assets/NAV_take_action.png') no-repeat center;
+	width: 82px;
+	height: 58px;
+}
+
+#paceHeaderMenu .impact {
+	background: transparent url('/Asset_Archive/GPWeb/content/0007/763/665/assets/NAV_impact.png') no-repeat center;
+	width: 46px;
+	height: 58px;
+}
+
+#paceHeaderMenu .photoGallery {
+	background: transparent url('/Asset_Archive/GPWeb/content/0007/763/665/assets/NAV_photo_gallery.png') no-repeat center;
+	width: 102px;
+	height: 58px;
+}
+
+#paceHeaderMenu .ourPartners {
+	background: transparent url('/Asset_Archive/GPWeb/content/0007/763/665/assets/NAV_our_partners.png') no-repeat center;
+	width: 95px;
+	height: 58px;
+}
+
+#paceHeaderMenu .learnMore {
+	background: transparent url('/Asset_Archive/GPWeb/content/0007/763/665/assets/NAV_learn_more.png') no-repeat center;
+	width: 80px;
+	height: 58px;
+}
+
+#paceBody {
+	position: relative;
+}
+
+#paceBody .categoryHeader {
+	margin: 35px 0 35px 89.5px;
+}
+
+#paceBody #videoCarousel {
+	overflow: hidden;
+	width: 988px;
+	height: 482px;
+	position: relative;
+}
+
+#paceBody #videoCarouselContent {
+	width: 1821px;
+	position: relative;
+}
+
+#paceBody .videoThumb {
+	margin-left: 51px;
+	display: inline-block;
+	float: left;
+}
+
+#paceBody .videoThumb.first {
+	background: url("/Asset_Archive/GPWeb/content/0007/763/665/assets/videoThumb01.jpg") top center;
+	width: 855px;
+	height: 482px;
+	margin-left: 51px;
+	
+}
+
+#paceBody .videoThumb.first:hover {
+	background-position: 0 -482px;
+}
+
+#paceBody .videoThumb.last {
+	background: url("/Asset_Archive/GPWeb/content/0007/763/665/assets/videoThumb02.jpg") top center;
+	width: 875px;
+	height: 482px;
+	margin-left: 20px;
+}
+
+#paceBody .videoThumb.last:hover {
+	background-position: 0 -482px;
+}
+
+#paceSideWrapper{
+
+}
+
+#paceSideMenu {
+	position: absolute;
+	float: left;
+	top: 76px;
+	width: 101px;
+	list-style: none;
+	margin: 0 114px 0 0;
+	padding: 0;
+	z-index: 99;
+	display: none;
+}
+
+#paceSideMenu li {
+	margin-bottom: 23px;
+}
+
+#paceSideMenu li a {
+	display: block;
+	background: url("/Asset_Archive/GPWeb/content/0007/763/665/assets/sideNav-sprite.png") no-repeat top center;
+	height: 9px;
+}
+
+#paceSideMenu .shareVideo {
+	background-position: 0 0;
+	width: 84px;
+}
+
+#paceSideMenu .shareVideo:hover,
+#paceSideMenu .active .shareVideo {
+	background-position: 0 -9px;
+
+}
+
+#paceSideMenu .takeAction {
+	background-position: 0 -18px;
+	width: 81px;
+}
+
+#paceSideMenu .takeAction:hover,
+#paceSideMenu .active .takeAction {
+	background-position: 0 -27px;
+}
+
+#paceSideMenu .impact {
+	background-position: 0 -36px;
+	width: 46px;
+}
+
+#paceSideMenu .impact:hover,
+#paceSideMenu .active .impact {
+	background-position: 0 -45px;
+}
+
+#paceSideMenu .photoGallery {
+	background-position: 0 -54px;
+	width: 102px;
+}
+
+#paceSideMenu .photoGallery:hover,
+#paceSideMenu .active .photoGallery {
+	background-position: 0 -63px;
+}
+
+#paceSideMenu .ourPartners {
+	background-position: 0 -72px;
+	width: 95px;
+}
+
+#paceSideMenu .ourPartners:hover,
+#paceSideMenu .active .ourPartners {
+	background-position: 0 -81px;
+}
+
+#paceSideMenu .learnMore {
+	background-position: 0 -90px;
+	width: 81px;
+}
+
+#paceSideMenu .learnMore:hover,
+#paceSideMenu .active .learnMore {
+	background-position: 0 -99px;
+}
+
+#paceSideMenu #shareTheStory {
+	background-position: 0 -108px;
+	width: 93px;
+	height: 7px;
+}
+
+#paceSideMenu #shareTheStory:hover,
+#paceSideMenu .active #shareTheStory {
+	background-position: 0 -115px;
+	width: 93px;
+	height: 7px;
+}
+
+#paceContent {
+	position: relative;
+	float: left;
+	width: 773px;
+}
+
+#paceContent .content {
+	width: 735px;
+	padding: 0 34px 84px 215px;
+	margin: 0 auto;
+}
+
+#paceContent #shareVideoCategory,
+#paceContent #takeActionCategory,
+#paceContent #impactCategory,
+#paceContent #photoGalleryCategory,
+#paceContent #ourPartnersCategory {
+	width: 988px;
+	position: relative;
+	/*left: -215px;*/
+}
+
+#paceContent #takeActionCategory {
+	background: #f6f0ea url("/Asset_Archive/GPWeb/content/0007/763/665/assets/TakeAction_gradient.gif") no-repeat top center;
+}
+
+#paceContent #impactCategory {
+	background: #e6ddd4 url("/Asset_Archive/GPWeb/content/0007/763/665/assets/Impact_gradient.gif") no-repeat top center;
+}
+
+#paceContent #photoGalleryCategory {
+	background: #f2f0ee url("/Asset_Archive/GPWeb/content/0007/763/665/assets/Gallery_gradient.gif") no-repeat top center;
+}
+
+#paceContent #ourPartnersCategory {
+	background: #fff url("/Asset_Archive/GPWeb/content/0007/763/665/assets/OurPartners_gradient.gif") no-repeat top center;
+}
+
+#paceContent .categoryHeader {
+	margin: 82px 0 35px 0;
+}
+
+#paceContent #shareVideoCategory .categoryHeader {
+	margin: 48px 0;
+}
+
+#paceFooter {
+	background: #d13d48 url("/Asset_Archive/GPWeb/content/0007/763/665/assets/Learnmore_gradient.gif") no-repeat top center;
+	text-align: center;
+	margin-bottom: 15px;
+}
+
+#paceFooter .footerCopy {
+	font-size: 30px;
+	color: #fff;
+	padding: 140px 0 40px 0;
+	margin: 0;
+}
+
+#paceFooter .footerCopy a {
+	color: #fae198 !important;
+	text-decoration: none;
+}
+
+#paceFooter .footerMenu {
+	list-style: none;
+	margin: 0 0 140px 260.5px;
+	padding: 0;
+}
+
+#paceFooter .footerMenu li {
+	float: left;
+	display: inline-block;
+	margin-right: 45px;
+}
+
+#paceFooter .footerMenu li a {
+	display: block;
+	font-size: 11px;
+}
+
+#paceFooter .footerMenu li .contact-us {
+	background: url("/Asset_Archive/GPWeb/content/0007/763/665/assets/contact-us.png") no-repeat center;
+	display: block;
+	width: 66px;
+	height: 8px;
+}
+
+#paceFooter .footerMenu li .privacy-policy {
+	background: url("/Asset_Archive/GPWeb/content/0007/763/665/assets/privacy-policy.png") no-repeat center;
+	display: block;
+	width: 87px;
+	height: 8px;
+}
+
+#paceFooter .footerMenu li .tos {
+	background: url("/Asset_Archive/GPWeb/content/0007/763/665/assets/terms-of-use.png") no-repeat center;
+	display: block;
+	width: 75px;
+	height: 8px;
+}
+
+#paceFooter .footerMenu li.copyright {
+	background: url("/Asset_Archive/GPWeb/content/0007/763/665/assets/copyright.png") no-repeat center;
+	display: block;
+	width: 104px;
+	height: 8px;
+}
+
+
+
+/**** Share Content ******/
+h3,h2 {
+	margin: 0;
+}
+
+a {
+	outline: none;
+}
+
+#paceSocialLinks {
+	width: 112px;
+	height: 40px;
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/hover_share_the_story.png') no-repeat 0 bottom;
+	z-index: 99;
+	margin: 10px 0 0 -9px;
+	overflow: hidden;
+}
+
+#paceSocialLinks ul {
+	list-style: none;
+	margin: 0 0 0 16px;
+	padding:0;
+	width: 112px;
+	height: 40px;
+}
+
+#paceSocialLinks ul li {
+	float: left;
+	margin: 15px 17px 0 0;
+}
+
+#shareSideNav {
+	width: 112px;
+	height: 16px;
+	margin: 0;
+	padding:0;
+	position: absolute
+}
+
+#shareSideNav ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#shareSideNav li{
+	float: left;
+}
+
+#shareSideNav a {
+	text-indent: -9999px;
+}
+
+#sideNavTwitter {
+	display: block;
+	width: 19px!important;
+	height: 16px!important;
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/share-nav-twitter.png') no-repeat 0 0 !important;
+}
+
+#sideNavTwitter:hover {
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/share-nav-twitter-hover.png') no-repeat 0 0 !important ;
+}
+
+
+#sideNavFB {
+	display: block!important;
+	width: 10px!important;
+	height: 16px!important;
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/share-nav-fb.png') no-repeat 0 0 !important;
+}
+
+#sideNavFB:hover {
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/share-nav-fb-hover.png') no-repeat 0 0 !important ;
+}
+
+#sideNavMail {
+	display: block!important;
+	width: 15px!important;
+	height: 12px!important;
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/share-nav-mail.png') no-repeat 0 0 !important;
+
+}
+
+#sideNavMail:hover {
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/share-gallery-mail-hover.png') no-repeat 0 0 !important ;
+}
+
+
+#pacebannercontainer {
+	position: relative;
+	width: 100%;
+	height: 89px;
+	padding: 48px 0;
+}
+
+#share-big-twitter, #share-big-fb, #share-big-mail {
+	margin-left: -3px;
+}
+
+#circleSocialLinks {
+	position: absolute;
+	top: 64px;
+	right: 40px;
+	list-style: none;
+	margin:0;
+	padding: 0;
+	text-decoration: none;
+}
+#circleSocialLinks li {
+	float: left;
+	margin-right: 35px;
+}
+
+#circleSocialLinks a {
+	display: block;
+	width: 75px;
+	height: 76px;
+	text-decoration: none;
+	padding: 0;
+	margin: 0;
+	text-indent: -9999px;
+}
+#circleSocialLinks #circleTwitter {
+	background: url(/Asset_Archive/GPWeb/content/0007/763/665/assets/share-big-twitter.png) no-repeat center center;
+}
+#circleSocialLinks #circleFB {
+		background: url(/Asset_Archive/GPWeb/content/0007/763/665/assets/share-big-fb.png) no-repeat center center;
+}
+#circleSocialLinks #circleEmail {
+			background: url(/Asset_Archive/GPWeb/content/0007/763/665/assets/share-big-mail.png) no-repeat center center;
+}
+
+
+#paceSubheadline {
+	font-size: 22px;
+	line-height: 32px;
+	color: #999999;
+	font-family: Helvetica, Arial, sans-serif !important;
+	font-weight: 100;
+	margin: 0 0 13px;
+	padding: 0;
+}
+
+.paceBoldText {
+	font-weight: 600;
+}
+
+.pace400 {
+	font-weight: 400;
+}
+
+
+.paceYellowText {
+	font-size: 18px;
+	color: #d4b11b;
+	font-weight: bold;
+	line-height: 24px;
+	font-family: Helvetica, Arial, sans-serif !important;
+	margin:0;
+	padding-bottom: 16px;
+}
+
+.pace600 {
+	font-weight: 600;
+}
+
+.paceCopy {
+	font-size: 13px;
+	color: #777777;
+	line-height: 24px;
+	margin: 0;
+	padding: 0;
+	font-weight: 400;
+}
+
+.paceItalic {
+	font-size: 14px;
+	color: #999999;
+	margin: 0;
+	font-style: italic;
+	font-weight: 400;
+	padding-top: 18px;
+}
+
+.paceLineBreak {
+	margin: 35px 0;
+}
+
+
+#paceGiftCard {
+	float: left;
+	display: inline-block;
+}
+
+#takeActionText {
+	float: left;
+	font-size: 18px;
+	line-height: 28px;
+	color: #777777;
+	font-weight: 100;
+	margin: -6px 0 0 25px;
+	padding:0;
+}
+
+#smallCopy {
+	float: left;
+	font-size: 11px;
+	color: #777777;
+	line-height: 20px;
+	font-weight: 400;
+	margin: 26px 0 0 25px;
+	width: 500px;
+}
+
+#paceBuyGiftCard {
+	display: block;
+	width: 511px;
+	height: 75px;
+	margin: 40px auto 0;
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/Button_off.gif') no-repeat 0 0;
+	text-indent: -9999px;
+    outline: none;
+    transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-webkit-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+}
+
+#paceBuyGiftCard:hover {
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/Button_over.gif') no-repeat 0 0;
+}
+
+#pacePartners {
+	font-size: 16px;
+	line-height: 26px;
+	color: #999999;
+	font-weight: 100;
+	margin:0;
+}
+
+#paceGlobalPartners {
+	display: block;
+	width: 577px;
+	margin: 0 0 0 78px;
+}
+
+.pacePartnerLogo {
+	float: left;
+	width: 152px;
+	margin: 0 auto;
+}
+
+.pacePartnerLogo img {
+	display: block;
+	margin: 0 auto;
+}
+
+.pacePartnerInfo {
+	float: left;
+	width: 410px;
+	margin: 0 0 17px 15px;
+	padding: 0;
+	font-size: 16px;
+	font-weight: 100;
+	line-height: 24px;
+	color: #666666;
+}
+
+.pacePartnerInfo p {
+	line-height: 24px;
+	margin: 0;
+}
+
+.pacePartnerCompany {
+	font-size: 13px;
+	font-weight: 100;
+	color: #999999;
+}
+
+#carousel-wrapper {
+    width: 700px;
+    height: 401px;
+    overflow: hidden;
+}
+#carousel-content {
+    width: 4900px;
+}
+#carousel-content .slide {
+    float: left;
+    width: 700px;
+    height: 401px;
+}
+
+#impactCategory .controls {
+	position: relative;
+	width: 100%;
+}
+
+#prevImpact {
+	display: block;
+	position: absolute;
+	width: 21px;
+	height: 91px;
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/impact-arrow-left.png') no-repeat 0 0;
+	left: -34px;
+	top: 155px;
+	transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-webkit-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+}
+
+#prevImpact:hover {
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/impact-arrow-left-hover.png') no-repeat 0 0;
+}
+
+#nextImpact {
+	position: absolute;
+	display: block;
+	width: 21px;
+	height: 91px;
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/impact-arrow-right.png') no-repeat 0 0;
+	right: 0px;
+	top: 155px;
+	transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-webkit-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+}
+
+#nextImpact:hover {
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/impact-arrow-right-hover.png') no-repeat 0 0;
+}
+
+#impactText {
+	font-size: 12px;
+	color: #666666;
+	margin-top: 30px;
+	display: block;
+}
+
+#smallShareLinks {
+	float: right;
+	list-style: none;
+	margin: 100px 14px 0 0;
+	padding: 0;
+}
+
+#smallShareLinks li {
+	float: left;
+	margin-right: 15px;
+}
+
+
+#smallShareLinks li img {
+	margin: 3px 8px 0 0;
+
+}
+
+#smallTwitterShare {
+	display: block;
+	width: 17px;
+	height: 14px;
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/share-gallery-twitter.png') no-repeat 0 0;
+	transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-webkit-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+}
+
+#smallTwitterShare:hover {
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/share-gallery-twitter-hover.png') no-repeat 0 0;
+}
+
+#smallFbShare {
+	display: block;
+	width: 17px;
+	height: 14px;
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/share-gallery-fb.png') no-repeat center center;
+	transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-webkit-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+}
+
+#smallFbShare:hover {
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/share-gallery-fb-hover.png') no-repeat center center;
+}
+
+#smallMailShare {
+	display: block;
+	width: 17px;
+	height: 14px;
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/share-gallery-mail.png') no-repeat center center;
+	transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-webkit-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+}
+
+#smallMailShare:hover {
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/share-gallery-mail-hover.png') no-repeat center center;
+}
+
+#photoCarousel-wrapper {
+    width: 708px;
+    height: 412px;
+    overflow: hidden;
+}
+
+#photoCarousel-content {
+    width: 7900px;
+}
+#photoCarousel-content .slide {
+    float: left;
+    width: 708px;
+    height: 412px;
+}
+
+#thumbnailCarousel-wrapper {
+	position: relative!important;
+    width: 646px !important;
+    height: 92px!important;
+    margin: 20px 0 0 31px!important;
+    overflow: hidden!important;
+}
+#thumbnailCarousel-content {
+    position: absolute;
+    width: 1100px;
+    height: 72px;
+
+}
+
+#thumbnailCarousel-content ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#thumbnailCarousel-content ul li {
+	list-style: none;
+	float: left;
+}
+
+#thumbnailCarousel-content ul li a {
+	width: 90px;
+	height: 65px;
+	margin-right: 14px;
+	padding: 2px;
+	border: 1px solid transparent;
+	display: block;
+}
+
+#thumbnailCarousel-content ul li a:hover {
+	border: 1px solid #8dc63f; 
+}
+
+#thumbnailCarousel-content ul li a.carousel-selected {
+	border: 1px solid #8dc63f; 
+	opacity: .5;
+	filter: alpha(opacity = 50);
+}
+
+#thumbnail-controls {
+	position: relative;
+	width: 708px;
+}
+
+#thumbnail-next {
+	position: absolute;
+	right: 0;
+	width: 15px;
+	height: 22px;
+	margin-top: -70px;
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/gallery-arrow-right.png') no-repeat 0 0;
+}
+
+#thumbnail-next:hover {
+	cursor: pointer;
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/gallery-arrow-right-hover.png') 0 0 no-repeat;
+
+}
+
+#thumbnail-next.inactive {
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/gallery-arrow-right-inactive.png') no-repeat 0 0;
+}
+#thumbnail-next.inactive:hover {
+	cursor: default;
+}
+
+#thumbnail-prev {
+	position: absolute;
+	left: 0;
+	width: 15px;
+	height: 22px;
+	margin-top: -70px;
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/gallery-arrow-left.png') no-repeat 0 0;
+}
+
+#thumbnail-prev:hover {
+	cursor: pointer;
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/gallery-arrow-left-hover.png') 0 0 no-repeat;
+}
+
+#thumbnail-prev.inactive {
+	background: url('/Asset_Archive/GPWeb/content/0007/763/665/assets/gallery-arrow-left-inactive.png') no-repeat 0 0;
+}
+
+#thumbnail-prev.inactive {
+cursor: default;
+}
+
+#galleryCaption {
+	font-size: 14px;
+	color: #666666;
+	font-weight: 100;
+}
+
+.clr {
+	clear: both;
+}
+</style>
+<div id="paceContainer">
+	<div id="paceHeader">
+		<div id="paceLogoHeadlinesContainer">
+			<div class="content">
+				<div id="paceLogo">
+					<img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/pace-logo_green.png" alt="P.A.C.E. Gap Inc." />
+				</div>
+				<div id="paceHeadlines">
+					<p class="headline">Advancing Women to Advance the World</p>
+					<p class="headline-sub">P.A.C.E. is a program for the women who make our clothes.
+					   <br>Through P.A.C.E., women gain opportunities to advance in work and in life.</p>
+				</div>
+			</div>
+		</div>
+		<div class="content">
+			<ul id="paceHeaderMenu">
+				<li><a class="shareVideo" href="#share-video" onclick="_gaq.push(['_trackEvent','nav_click','click','tab_1']); Effect.ScrollTo('shareVideoCategory'); return false;"><span class="hide">SHARE VIDEO</span></a></li>
+				<!-- <li><a class="takeAction" href="#take-action" onclick="_gaq.push(['_trackEvent','nav_click','click','tab_2']); Effect.ScrollTo('takeActionCategory'); return false;"><span class="hide">TAKE ACTION</span></a></li> -->
+				<li><a class="impact" href="#impact" onclick="_gaq.push(['_trackEvent','nav_click','click','tab_2']); Effect.ScrollTo('impactCategory'); return false;"><span class="hide">IMPACT</span></a></li>
+				<li><a class="photoGallery" href="#photo-gallery" onclick="_gaq.push(['_trackEvent','nav_click','click','tab_3']); Effect.ScrollTo('photoGalleryCategory'); return false;"><span class="hide">PHOTO GALLERY</span></a></li>
+				<li><a class="ourPartners" href="#our-partners" onclick="_gaq.push(['_trackEvent','nav_click','click','tab_4']); Effect.ScrollTo('ourPartnersCategory'); return false;"><span class="hide">OUR PARTNERS</span></a></li>
+				<li><a class="learnMore last" href="#learn-more" onclick="_gaq.push(['_trackEvent','nav_click','click','tab_5']); Effect.ScrollTo('paceFooter'); return false;"><span class="hide">LEARN MORE</span></a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="paceBody" class="clearfix">
+		<img class="categoryHeader" src="/Asset_Archive/GPWeb/content/0007/763/665/assets/head-sharestory.png" alt="IT'S NOT A DREAM IF YOU CAN DO IT" />
+		<div id="videoCarousel">
+			<div id="videoCarouselContent" class="content">
+				<a id="videoThumb01" onclick="_gaq.push(['_trackEvent','video','view','video_play']); playPACEVideo1();" href="javascript:void(0)" class="videoThumb first active"><span class="hide">WATCH THE VIDEO</span></a>
+				<a id="videoThumb02" onclick="_gaq.push(['_trackEvent','video','view','video_play']); playPACEVideo2();" href="javascript:void(0)" class="videoThumb last"><span class="hide">WATCH THE VIDEO</span></a>
+			</div>
+		</div>
+		<div id="paceContent">
+			<div id="paceSideWrapper">
+				<ul id="paceSideMenu">
+					<li data-category="shareVideoCategory">
+						<a class="sideNav shareVideo" href="#share-video" onclick="Effect.ScrollTo('shareVideoCategory'); return false;">
+							<span class="hide">SHARE VIDEO</span>
+						</a>
+					</li>
+					<!-- <li data-category="takeActionCategory">
+						<a class="sideNav takeAction" href="#take-action" onclick="Effect.ScrollTo('takeActionCategory'); return false;">
+							<span class="hide">TAKE ACTION</span>
+						</a>
+					</li> -->
+					<li data-category="impactCategory">
+						<a class="sideNav impact" href="#impact" onclick="Effect.ScrollTo('impactCategory'); return false;">
+							<span class="hide">IMPACT</span>
+						</a>
+					</li>
+					<li data-category="photoGalleryCategory">
+						<a class="sideNav photoGallery" href="#photo-gallery" onclick="Effect.ScrollTo('photoGalleryCategory'); return false;">
+							<span class="hide">PHOTO GALLERY</span>
+						</a>
+					</li>
+					<li data-category="ourPartnersCategory">
+						<a class="sideNav ourPartners" href="#our-partners" onclick="Effect.ScrollTo('ourPartnersCategory'); return false;">
+							<span class="hide">OUR PARTNERS</span>
+						</a>
+					</li>
+					<li data-category="paceFooter">
+						<a class="sideNav learnMore last" href="#learn-more" onclick="Effect.ScrollTo('paceFooter'); return false;">
+							<span class="hide">LEARN MORE</span>
+						</a>
+					</li>
+					<li><hr /></li>
+					<li id="social-links">
+						<a id="shareTheStory" href="#share-the-story">
+							<span class="hide">SHARE THE STORY</span>
+							
+						</a>
+						<div id="paceSocialLinks">
+							 	<ul>
+							 		<li><a href="javascript:void(0)" id="sideNavTwitter" onclick="twitterShare();"><span class="hide">Tweet PACE</span></a></li>
+							 		<li><a href="javascript:void(0)" id="sideNavFB" onclick="facebookShare();"><span class="hide">Tweet PACE</span></a></li>
+							 		<li style="margin-left: 3px;margin-top: 17px;"><a href="mailto:someone@example.com?subject=Gap Inc. P.A.C.E.&body=P.A.C.E. is a program for the women that make Gap clothes. Through P.A.C.E., women gain opportunities to advance in work and in life. When you share this video, you share the story of a woman making a difference for a brighter world. http://goo.gl/fhnQs" id="sideNavMail"><span class="hide">Mail PACE</span></a></li>
+								</ul>
+						</div> 
+					</li>
+				</ul>
+			</div>
+			<div id="shareVideoCategory">
+				<div class="content">
+					<div id="pacebannercontainer">
+					<img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/head-sharesujathasstory.png" alt="SHARE SUJATHA'S STORY" />
+						<ul id="circleSocialLinks">
+							<li><a onclick="_gaq.push(['_trackEvent','share_sujatha','share','share_twitter']); twitterShare();" id="circleTwitter" href="javascript:void(0)">Twitter</a>
+								<img id="share-big-twitter" src="/Asset_Archive/GPWeb/content/0007/763/665/assets/share_tweet.png" alt="Tweet" />
+							</li>
+							<li><a onclick="_gaq.push(['_trackEvent','share_sujatha','share','share_facebook']); facebookShare();" id="circleFB" href="javascript:void(0)">Facebook</a>
+								<img id="share-big-fb" src="/Asset_Archive/GPWeb/content/0007/763/665/assets/share_post.png" alt="Facebook" />
+							</li>
+							<li><a id="circleEmail" onclick="_gaq.push(['_trackEvent','share_sujatha','share','share_email']);" href="mailto:someone@example.com?subject=Gap Inc. P.A.C.E.&body=P.A.C.E. is a program for the women that make Gap clothes. Through P.A.C.E., women gain opportunities to advance in work and in life. When you share this video, you share the story of a woman making a difference for a brighter world. http://goo.gl/fhnQs">Email</a>
+								<img id="share-big-mail" src="/Asset_Archive/GPWeb/content/0007/763/665/assets/share_send.png" alt="Send" />
+							</li>
+						</ul>
+						<div class="clr"></div>
+					</div>
+					<h2 id="paceSubheadline">When you share the video, you share the story of a woman making a difference for a <span class="paceBoldText">brighter world</span>. Inspire others to do the same by sharing with your network.</h2>
+
+					<hr class="paceLineBreak" />
+
+					<h3 class="paceYellowText">Gap invests in women because we believe in the potential of every<br> woman to make the world brighter.</h3>
+
+					<p class="paceCopy">Simply put, no society can truly flourish if it stifles the dreams and productivity of half its population. Happily, I see evidence all over the world that women are gaining social and economic power that they never had before. This is good news not <br>only for the individuals themselves but also for entire societies, for it's been proved that women tend to reinvest economic<br> gains back into their families and communities more than men do.</p>
+
+					<p class="paceItalic">&mdash;President Bill Clinton, <u>"The Case for Optimism"</u> (TIME)</p> 
+					<hr class="paceLineBreak"  style="margin-bottom: 0;" />
+					
+				</div>
+			</div>
+
+			<!-- <div id="takeActionCategory">
+				<div class="content">
+					<img class="categoryHeader" src="/Asset_Archive/GPWeb/content/0007/763/665/assets/head-takeaction.png" alt="TAKE ACTION" />
+					<img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/takeaction-photo.jpg" alt=" PACE Take action" style="margin-bottom: 48px;" />
+					<img id="paceGiftCard" src="/Asset_Archive/GPWeb/content/0007/763/665/assets/takeaction-giftcard.png" alt="BE BRIGHT GAP gift card" />
+						<p id="takeActionText">Together we're helping to create a brighter future for women in<br> our communities. When you buy a <span class="pace600">Gap GiftCard</span>, 2% of your<br> purchase can benefit CARE's support of the P.A.C.E. program.</p>
+						<br />
+						<p id="smallCopy">*Donation applies to initial purchase price of GiftCard only. Not valid on GiftCard reloads. Offer valid <br>while supplies last.</p>
+					<div class="clr"></div>
+
+					
+					<a id="paceBuyGiftCard" href="http://www.gap.com/customerService/info.do?cid=2116" target="_onblank">BUY A GIFT CARD TO INVEST IN A BRIGHTER FUTURE FOR WOMEN</a>
+					
+				</div>
+			</div> -->
+
+			<div id="impactCategory">
+				<div class="content">
+					<img class="categoryHeader" src="/Asset_Archive/GPWeb/content/0007/763/665/assets/head-impact.png" alt="IMPACT" />
+
+					<div id="impactGalleryContainer">
+
+						<div class="controls">
+					       <a href="javascript:" id="nextImpact" class="carousel-control" rel="next" style="float: right"><span class="hide">Next</span></a>
+					       <a href="javascript:" id="prevImpact" class="carousel-control" rel="prev"><span class="hide">Previous</span></a>
+					    </div>
+						<div id="carousel-wrapper">
+						    <div id="carousel-content">
+						        <div class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/GAPPACE_Illos_20121218b-01.jpg" width="700" height="401" alt="80% of garment workers worldwide are women" /></div>
+						        <div class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/pace_25k_garmentWorkers.jpg" width="700" height="401" alt="More than 25,000 female garment workers have participated in P.A.C.E." /></div>
+						        <div class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/GAPPACE_Illos_20121218b-03.jpg" width="700" height="401" alt="Women earn less than 10% of the world's wages but account for 66% of the world's working hours." /></div>
+						        <div class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/pace_promotionRate_women.jpg" width="700" height="401" alt="In Cambodia, P.A.C.E. women were promoted 3.1 x faster than other garment workers at the same factory" /></div>
+						        <div class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/GAPPACE_Illos_20121218b-05.jpg" width="700" height="401" alt="Women reinvest 90% of their income in their families." /></div>
+						        <div class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/GAPPACE_Illos_20121218b-06.jpg" width="700" height="401" alt="P.A.C.E. women reporting that they are saving regularly and at a greater rate increased by 69% in India." /></div>
+						        <div class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/GAPPACE_Illos_20121218b-01.jpg" width="700" height="401" alt="80% of garment workers worldwide are women" /></div>77
+						    </div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<div id="photoGalleryCategory">
+				<div class="content">
+					<img class="categoryHeader" src="/Asset_Archive/GPWeb/content/0007/763/665/assets/head-photogallery.png" alt="PHOTO GALLERY" style="float:left;width:347px;" />
+					<ul id="smallShareLinks" style="width:278px;">
+						<li><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/share-photos-text.png" alt="Share these Photos On" /></li>
+						<li><a onclick="_gaq.push(['_trackEvent','share_gallery','share','share_twitter']); twitterSharePhoto();" id="smallTwitterShare" href="javascript:void(0)"><span class="hide">Share Photo Gallery on Twitter</span></a></li>
+						<li><a onclick="_gaq.push(['_trackEvent','share_gallery','share','share_facebook']); facebookSharePhoto();" id="smallFbShare" href="javascript:void(0)"><span class="hide">Share Photo Gallery on Facebook</span></a></li>
+						<li><a id="smallMailShare" onclick="_gaq.push(['_trackEvent','share_gallery','share','share_email']);"  href="mailto:someone@example.com?subject=Gap Inc. P.A.C.E.&body=P.A.C.E. is a program for the women that make Gap clothes. Through P.A.C.E., women gain opportunities to advance in work and in life. Check out these photos documenting the program. http://goo.gl/PhsuG"><span class="hide">Mail Photo Gallery</span></a></li>
+					</ul>
+					<div class="clr"></div>
+					<div id="photoGalleryContainer">
+
+						
+						<div id="photoCarousel-wrapper">
+						    <div id="photoCarousel-content">
+						        <div id="slide-1" class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_356.jpg" width="708" height="412" alt="80% of garment workers worldwide are women" /></div>
+						        <div id="slide-2" class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_510.jpg" width="708" height="412" alt="More than 12,00 female garment workers have participated in P.A.C.E." /></div>
+						        <div id="slide-3" class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_378.jpg" width="708" height="412" alt="Women earn less than 10% of the world's wages. But account for 66% of the world's working hours." /></div>
+						        <div id="slide-4" class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_966.jpg" width="708" height="412" alt="In Cambodia, P.A.C.E. women were promoted 4.1 x faster than other garment workers at the same factory" /></div>
+						        <div id="slide-5" class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_260.jpg" width="708" height="412" alt="Women reinvest 90% of their income in their families." /></div>
+						        <div id="slide-6" class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_283.jpg" width="708" height="412" alt="The number of women saving money has increased by 69% in India" /></div>
+						        <div id="slide-7" class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_9.jpg" width="708" height="412" alt="The number of women saving money has increased by 69% in India" /></div>
+						        <div id="slide-8" class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_981.jpg" width="708" height="412" alt="The number of women saving money has increased by 69% in India" /></div>
+						        <div id="slide-9" class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_973.jpg" width="708" height="412" alt="The number of women saving money has increased by 69% in India" /></div>
+						        <div id="slide-10" class="slide"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_960.jpg" width="708" height="412" alt="The number of women saving money has increased by 69% in India" /></div>
+						    </div>
+						</div>
+						<div id="thumbnailCarousel-wrapper">
+						    <div id="thumbnailCarousel-content">
+						    	<ul id="thumblist">
+						    		<li><a href="javascript:" class="carousel-jumper carousel-selected" rel="slide-1"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_Thumb_356.jpg" alt=""></a></li>
+						    		<li><a href="javascript:" class="carousel-jumper" rel="slide-2"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_Thumb_510.jpg" alt=""></a></li>
+						    		<li><a href="javascript:" class="carousel-jumper" rel="slide-3"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_Thumb_378.jpg" alt=""></a></li>
+						    		<li><a href="javascript:" class="carousel-jumper" rel="slide-4"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_Thumb_966.jpg" alt=""></a></li>
+						    		<li><a href="javascript:" class="carousel-jumper" rel="slide-5"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_Thumb_260.jpg" alt=""></a></li>
+						    		<li><a href="javascript:" class="carousel-jumper" rel="slide-6"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_Thumb_283.jpg" alt=""></a></li>
+						    		<li><a href="javascript:" class="carousel-jumper" rel="slide-7"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_Thumb_9.jpg" alt=""></a></li>
+						    		<li><a href="javascript:" class="carousel-jumper" rel="slide-8"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_Thumb_981.jpg" alt=""></a></li>
+						    		<li><a href="javascript:" class="carousel-jumper" rel="slide-9"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_Thumb_973.jpg" alt=""></a></li>
+						    		<li><a href="javascript:" class="carousel-jumper" rel="slide-10"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/PACE_Cam2011_Thumb_960.jpg" alt=""></a></li>
+						    	</ul>
+						    	<div class="clr"></div>
+						    </div>
+							
+						</div>
+						<div id="thumbnail-controls">
+							<a id="thumbnail-prev" class="inactive"><span class="hide">Previous slide</span></a>
+							<a id="thumbnail-next"><span class="hide">Next slide</span></a>
+						</div>
+						<div class="clr"></div>
+
+					</div>
+
+					<span id="galleryCaption">P.A.C.E. operates in 7 countries around the globe. Get to know these remarkable women.</span>
+
+					
+				</div>
+			</div>
+
+			<div id="ourPartnersCategory">
+				<div class="content">
+					<img class="categoryHeader" src="/Asset_Archive/GPWeb/content/0007/763/665/assets/head-ourpartners.png" alt="OUR PARTNERS" />
+					<p id="pacePartners">Gap Inc. launched P.A.C.E. in 2007 in partnership with vendors and global and local non-governmental organizations (NGOs). We leverage our company resources and expertise and these critical partnerships to provide life skills, education, and technical training to female garment workers through the P.A.C.E. program. More than 25,000 women have participated in P.A.C.E. so far — and the number is growing every day.<br><br>
+ 					In 2013, the International Center for Research on Women (ICRW) published a report that includes findings from a 2009 – 2013 study on the results of the P.A.C.E. program. The study found that P.A.C.E. is changing the lives of women and their families and the businesses where they work. Learn more by downloading the report: <a style="color:#666666; text-decoration: underline;" href="http://www.icrw.org/publications/advancing-women-changing-lives" target="_blank">Advancing Women, Changing Lives</a>.<br><br>
+ 					In partnership with CARE and Swasti, P.A.C.E. has expanded into communities in Cambodia and India to support even more women, outside of the factory setting. In 2014, P.A.C.E. will be offered in communities in Bangladesh, Haiti and Indonesia.</p>
+
+					<div id="paceGlobalPartners">
+						<h3 class="paceYellowText" style="margin-top: 44px; padding-bottom: 22px;">Global Program Partners</h3>
+						<div class="pacePartnerLogo">
+							<a href="http://www.care.org" target="_onblank"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/partner-care.jpg" alt="CARE Logo" /></a>
+						</div>
+						<div class="pacePartnerInfo">
+							<p>Fighting global poverty through the training and education of girls and women in need<br>
+<span class="pacePartnerCompany"><span class="pace400">CARE</span> provides implementation and training support for P.A.C.E.</span></p>
+
+						</div>
+						<div class="clr"></div>
+						<hr style="margin: 26px 0 35px;" />
+
+						<div class="pacePartnerLogo">
+							<a href="http://www.icrw.org" target="_onblank"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/partner-icrw.jpg" alt="ICRW Logo" /></a>
+						</div>
+						<div class="pacePartnerInfo" style="margin-top: -8px;">
+							<p>Uncovering sustainable solutions to the many challenges faced by women and girls in the developing world<br>
+<span class="pacePartnerCompany"><span class="pace400">ICRW</span> offers strategic guidance and leads program evaluation <br>and measurement.</span></p>
+
+						</div>
+
+						<div class="clr"></div>
+						<hr style="margin: 6px 0 35px;" />
+
+						<div class="pacePartnerLogo">
+							<a href="http://www.swasti.org" target="_onblank"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/partner-swasti.jpg" alt="Swasti Logo" /></a>
+						</div>
+						<div class="pacePartnerInfo" style="margin-top: -8px;">
+							<p>Advancing health and well-being through empowerment and innovation<br>
+<span class="pacePartnerCompany"><span class="pace400">Swasti Health Resource Centre</span> supports the program <br>design, quality, and training for facilitators.</span></p>
+
+						</div>
+
+						<!-- <div class="clr"></div>
+						<h3 class="paceYellowText" style="margin-top: 58px; padding-bottom: 22px;">Digital Network</h3>
+
+						<div class="pacePartnerLogo">
+							<a href="http://www.forbes.com/home_usa/" target="_onblank"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/partner-Forbes.png" style="margin-top: 20px;" alt="Forbes Logo" /></a>
+						</div>
+						<div class="pacePartnerInfo">
+							<p>Since 1917, Forbes has provided information to ensure<br> the success of their readers with a strong focus on advancing women through editorial, conferences and recognition.</p>
+						</div>
+						<div class="clr"></div>
+						<hr style="margin: 26px 0 35px;" />
+
+						<div class="pacePartnerLogo">
+							<a href="http://www.thedailybeast.com/" target="_onblank"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/partner-Newsweek.png" alt="Newsweek Logo"></a>
+						</div>
+						<div class="pacePartnerInfo" style="margin-top: -8px;">
+							<p>Launched in 2010 by Newsweek and The Daily Beast, Women in the World is a movement dedicated to advancing women and girls.</p>
+						</div>
+
+						<div class="clr"></div>
+
+						<hr style="margin: 26px 0 35px;" />
+
+						<div class="pacePartnerLogo">
+							<a href="http://www.good.is" target="_onblank"><img src="/Asset_Archive/GPWeb/content/0007/763/665/assets/partner-GOOD.png" alt="GOOD Logo" /></a>
+						</div>
+						<div class="pacePartnerInfo" style="margin-top: -8px;">
+							<p>Since 2006, GOOD has been a community for those working towards individual and collective progress.</p>
+
+						</div> -->
+						<div class="clr"></div>
+
+
+
+					</div>
+
+					 
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="paceFooter" class="clearfix">
+		<div class="content">
+			<p class="footerCopy">Learn more at <a href="https://www.bewhatspossible.com/pace" target="_blank">bewhatspossible.com/pace</a> <span style="display: inline-block; width: 0; height: 0; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 10px solid #fae198;"></span></p>
+			<ul class="footerMenu clearfix">
+				<li><a class="contact-us" href="http://www.gap.com/customerService/info.do?cid=2136"><span class="hide">CONTACT US</span></a></li>
+				<li><a class="privacy-policy" href="http://www.gap.com/customerService/info.do?cid=2331"><span class="hide">PRIVACY POLICY</span></a></li>
+				<li><a class="tos" href="http://www.gap.com/customerService/info.do?cid=6754"><span class="hide">TERMS OF USE</span></a></li>
+				<li class="copyright"><span class="hide">&copy; GAP + GOOD 2013</span></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+new Carousel('carousel-wrapper', $$('#carousel-content .slide'), $$('a.carousel-control'), {
+    wheel: false,
+    circular: true,
+    auto: false,
+    effect: scroll,
+    frequency: 5,
+    duration: 1
+});  
+
+new Carousel('photoCarousel-wrapper', $$('#photoCarousel-content .slide'), $$('a.carousel-jumper'), {
+    wheel: false,
+    circular: true,
+    auto: false,
+    effect: 'fade',
+    frequency: 5,
+    duration: .25
+}); 
+
+function thumbnailButtonNext(a,b,c) {
+	$(a).observe("click", function() {
+		if(!this.hasClassName("inactive")) {
+			this.addClassName("inactive");
+			//alert('clicked');
+			$(b).removeClassName("inactive");
+			new Effect.Move( c , { x: -440 });
+		}
+	});
+}
+
+function thumbnailButtonPrev(a,b,c) {
+	$(a).observe("click", function() {
+		if(!this.hasClassName("inactive")) {
+			this.addClassName("inactive");
+			//alert('clicked');
+			$(b).removeClassName("inactive");
+			new Effect.Move( c , { x: 440 });
+		}
+	});
+}
+
+thumbnailButtonNext('thumbnail-next', 'thumbnail-prev' ,'thumbnailCarousel-content');
+thumbnailButtonPrev('thumbnail-prev', 'thumbnail-next' ,'thumbnailCarousel-content');
+
+
+//SHARE LINKS FOR VIDEOS
+function facebookShare() {
+  window.open('http://www.facebook.com/sharer.php?u=http://www.gap.com/Asset_Archive/GPWeb/content/0005/993/504/assets/sujatha_video_facebook.html&t=Gap Inc. P.A.C.E. ','ShareFacebook','toolbar=0,status=0,width=620,height=440');
+}
+
+function twitterShare() {
+  window.open('http://www.twitter.com/share?url=http://goo.gl/AiyJ4&text=Advance women to advance the world. Watch how @Gap\'s P.A.C.E. program is doing so:&hashtags=PACE','ShareTwitter','toolbar=0,status=0,width=620,height=440');
+}
+
+//SHARE LINKS FOR PHOTO GALLERY
+function facebookSharePhoto() {
+  window.open('http://www.facebook.com/sharer.php?u=http://www.gap.com/Asset_Archive/GPWeb/content/0005/993/504/assets/photogallery_facebook.html&t=P.A.C.E. is a program for the women that make Gap clothes.','ShareFacebook','toolbar=0,status=0,width=620,height=440');
+}
+
+function twitterSharePhoto() {
+  window.open('http://www.twitter.com/share?url=http://goo.gl/zjf1w&text=Advance women to advance the world. See how @Gap\'s P.A.C.E. program is doing so:&hashtags=PACE','ShareTwitter','toolbar=0,status=0,width=620,height=440');
+}
+
+/* GOOGLE ANALYTICS */
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-10085219-22']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+ var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+ var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>

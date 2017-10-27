@@ -1,0 +1,671 @@
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Gap's CTA System</title>
+    <link rel="stylesheet" type="text/css" href="wcd-CTAdropdowns.css">
+    <script type="text/javascript" src="../sh/scripts/shCore.js"></script>
+    <script type="text/javascript" src="../sh/scripts/shBrushJScript.js"></script>
+    <link type="text/css" rel="stylesheet" href="../sh/styles/shCoreDefault.css"/>
+    <script type="text/javascript">SyntaxHighlighter.all();</script>
+    </head>
+    <link href="https://fonts.googleapis.com/css?family=Hind" rel="stylesheet">
+    <link href="../style.css" rel="stylesheet">
+    <style>
+      .content,.testWrap{
+        background: #ccc;
+      }
+      @media (min-width: 768px){
+        .tab{
+          padding-left:20px;
+        }
+      }
+      @media (max-width: 767px){
+        xmp{
+          display:none;
+        }
+      }
+      .wrapperCTA{
+        display: inline-block;
+        width: 100%;
+      }
+
+      .wrapperCTA a{
+        font-style: normal;
+      }
+    </style>
+<body>
+    <div class="content">
+    
+      <header>
+        <nav>
+          <a href="../index.html">Xian's Sandbox</a>
+        </nav>
+      </header>
+
+
+
+  <div class="wrapper">
+
+  <h1>Gap's CTA/Dropdown System v2</h1>
+  Updates + additions: Japan's half mobile dropdowns, tab-able buttons, new creative button styles, breakpoint specific styling, switch between dropdown and list formats.
+
+  <br><br>
+
+  For live content: Link directly. Pls do not edit: 
+  <pre class="brush: js;">
+    <link rel="stylesheet" type="text/css" href="/Asset_Archive/GPWeb/content/0011/027/523/wcd-CTAdropdowns.css">
+    <script src="/Asset_Archive/GPWeb/content/0011/027/523/wcd-CTAdropdowns.js"></script>
+  </pre>
+
+
+  <h2 id="dropdowns">Dropdowns</h2>
+  Mobile: Dropdowns are stand alone horizontal bars. <br>
+  Desktop: Dropdowns are inline elements whose width is determined by the longest word in the dropdown.<br>
+  <br>
+  *note: To absolute position the CTA, please add a new class to the wrapperCTA like: class="warpperCTA absPosClass". And use CSS to add rules to position that new class.
+  <br><br>
+
+
+
+    <!-- dropdown -->
+    <div class="wrapperCTA">
+        <ul class="CTAmenu">
+            <li class="CTAlist">
+                <a class="CTAbutton" href="javascript:void(0)">Dropdown <span class="plusMinus"></span></a>
+                <ul class="CTAdropdownList">
+                    <li><a href="#linkhere">link 1</a></li>
+                    <li><a href="#linkhere">here is link 2</a></li>
+                    <li><a href="#linkhere">and link 3</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <script src="https://gist.github.com/anonymous/47bd1a4aa83fade2f46b464d0a3c7cf6.js"></script>
+
+
+
+
+  <h2 id="mobileDoubleDropdown">Japan's Mobile Double Dropdowns</h2> 
+  Use data-size="half dropdown"
+
+
+
+    <!-- dropdown -->
+    <div class="wrapperCTA">
+        <ul class="CTAmenu" data-size="half dropdown">
+            <li class="CTAlist">
+                <a class="CTAbutton" href="javascript:void(0)">Dropdown <span class="plusMinus"></span></a>
+                <ul class="CTAdropdownList">
+                    <li><a href="#linkhere">link 1</a></li>
+                    <li><a href="#linkhere">here is link 2</a></li>
+                    <li><a href="#linkhere">and link 3</a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <ul class="CTAmenu" data-size="half dropdown">
+            <li class="CTAlist">
+                <a class="CTAbutton" href="javascript:void(0)">Dropdown <span class="plusMinus"></span></a>
+                <ul class="CTAdropdownList">
+                    <li><a href="#linkhere">link 1</a></li>
+                    <li><a href="#linkhere">here is link 2</a></li>
+                    <li><a href="#linkhere">and link 3</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+
+
+  <script src="https://gist.github.com/anonymous/679ece03695ea05d8ef4170a282fb1ae.js"></script>
+
+
+
+  <hr>
+
+
+
+
+  <h2 id="buttons">Buttons</h2>
+  Mobile: buttons are full width horizontal bars or half width buttons.<br>
+  Desktop: Buttons are inline elemnts whose width is determined by the button copy.<br>
+
+  <h3>1. Default button</h3>
+  Mobile: stand alone horizontal bars<br>
+  Desktop: inline block buttons. The text defines the size ofbutton.<br>
+
+
+
+  <!-- button -->
+  <div class="wrapperCTA">
+    <ul class="CTAmenu">
+        <li class="CTAlist" data-color="gap blue" data-background="white">
+            <a class="CTAbutton" href="#linkhere">button 1</a>
+        </li>
+    </ul>
+  </div>
+
+  <!-- one button-->
+ <script src="https://gist.github.com/anonymous/a4230c4266fa2dfc61a7c8cb0680293d.js"></script>
+
+
+  <!-- button -->
+  <div class="wrapperCTA">
+    <ul class="CTAmenu">
+        <li class="CTAlist" data-color="gap blue" data-background="white">
+            <a class="CTAbutton" href="#linkhere">button 1a</a>
+        </li>
+        <li class="CTAlist" data-color="gap blue" data-background="white">
+            <a class="CTAbutton" href="#linkhere">button 2a</a>
+        </li>
+    </ul>
+  </div>
+
+  <!-- multiple buttons in a row -->
+<script src="https://gist.github.com/anonymous/0e0ea9087b6529225837ea5ad81026b9.js"></script>
+
+
+
+
+  <br><br>
+
+  <h3 id="halfButtons">2. Half width buttons</h3>
+  You can wrap it in a div with a set width. <br>
+  Also available: <b>data-size-at-lg="half"</b> and <b>data-size-at-md="half"</b><br>
+
+  <!--button-->
+  <div class="wrapperCTA">
+    <ul class="CTAmenu" data-size="half">
+        <li class="CTAlist" data-color="gap blue" data-background="white">
+            <a class="CTAbutton" href="linkhere">half item</a>
+        </li>
+        <li class="CTAlist" data-color="gap blue" data-background="white">
+            <a class="CTAbutton" href="linkhere">half item 2</a>
+        </li>
+    </ul>
+  </div>
+
+<script src="https://gist.github.com/anonymous/f300195569ddce6876de10d3dc9e7c0f.js"></script>
+
+
+  <hr>
+
+
+
+
+  <h2 id="colorSchemes">Color Schemes</h2>
+  For flexibility, we have separate data varialbles for Font&Border color and for background color. They can be used in combination.
+  <br><br>
+  Font&Border Color: There are currently 3 color options: white, gap blue, and black<br>
+  Background Color: here are 5 background color options: white, gap blue, black, translucent black, and translucent white. 
+  <br><br>
+
+
+      Font & Border Color: 
+      <ul>
+        <li>data-color="white"</li>
+        <li>data-color="gap blue"</li>
+        <li>data-color="black"</li>
+        <li>data-color-at-lg="white", data-color-at-md="white" *</li>
+        <li>data-color-at-lg="black", data-color-at-md="black" *</li>
+      </ul>
+
+      <br><br>
+      Background color: 
+      <ul>
+        <li>data-background="white"</li>
+        <li>data-background="gap blue"</li>
+        <li>data-background="black"</li>
+        <li>data-background="translucent black"</li>
+        <li>data-background="translucent white"</li>
+      </ul>
+
+      * The black and white font/border color have their own mobile and desktop data attributes that can be used together like:
+      <pre class="brush: js;">
+        <li class="CTAlist" data-color-at-lg="black" data-color-at-md="white" data-background="translucent black"></li>
+      </pre>
+
+      <br><br>
+
+
+
+
+
+        <div class="wrapperCTA">
+          <ul class="CTAmenu">
+              <li class="CTAlist" data-color="white">
+                  <a class="CTAbutton" href="javascript:void(0)">white <span class="plusMinus"></span></a>
+                  <ul class="CTAdropdownList">
+                      <li><a href="#link1">link 1</a></li>
+                      <li><a href="#link2">here is link 2</a></li>
+                      <li><a href="#link3">and link 3</a></li>
+                  </ul>
+              </li>
+              <li class="CTAlist" data-color="gap blue">
+                  <a class="CTAbutton" href="javascript:void(0)">gap blue <span class="plusMinus"></span></a>
+                  <ul class="CTAdropdownList">
+                      <li><a href="#link1">link 1</a></li>
+                      <li><a href="#link2">here is link 2</a></li>
+                      <li><a href="#link3">and link 3</a></li>
+                  </ul>
+              </li>
+              <li class="CTAlist" data-color="black">
+                  <a class="CTAbutton" href="javascript:void(0)">black <span class="plusMinus"></span></a>
+                  <ul class="CTAdropdownList">
+                      <li><a href="#link1">link 1</a></li>
+                      <li><a href="#link2">here is link 2</a></li>
+                      <li><a href="#link3">and link 3</a></li>
+                  </ul>
+              </li>
+              <li class="CTAlist" data-color="white" data-background="translucent black">
+                <a class="CTAbutton" href="javascript:void(0)">40% black <span class="plusMinus"></span></a>
+                <ul class="CTAdropdownList">
+                    <li><a href="#link1">link 1</a></li>
+                    <li><a href="#link2">here is link 2</a></li>
+                    <li><a href="#link3">and link 3</a></li>
+                </ul>
+            </li>
+            <li class="CTAlist" data-color="white" data-background="black">
+                <a class="CTAbutton" href="javascript:void(0)">black <span class="plusMinus"></span></a>
+                <ul class="CTAdropdownList">
+                    <li><a href="#link1">link 1</a></li>
+                    <li><a href="#link2">here is link 2</a></li>
+                    <li><a href="#link3">and link 3</a></li>
+                </ul>
+            </li>
+            <li class="CTAlist" data-color="white" data-background="gap blue">
+                <a class="CTAbutton" href="javascript:void(0)">gap blue <span class="plusMinus"></span></a>
+                <ul class="CTAdropdownList">
+                    <li><a href="#link1">link 1</a></li>
+                    <li><a href="#link2">here is link 2</a></li>
+                    <li><a href="#link3">and link 3</a></li>
+                </ul>
+            </li>
+            <li class="CTAlist" data-color="gap blue" data-background="white">
+                <a class="CTAbutton" href="javascript:void(0)">white <span class="plusMinus"></span></a>
+                <ul class="CTAdropdownList">
+                    <li><a href="#link1">link 1</a></li>
+                    <li><a href="#link2">here is link 2</a></li>
+                    <li><a href="#link3">and link 3</a></li>
+                </ul>
+            </li>
+            <li class="CTAlist" data-color="black" data-background="translucent white">
+                <a class="CTAbutton" href="javascript:void(0)">50% white <span class="plusMinus"></span></a>
+                <ul class="CTAdropdownList">
+                    <li><a href="#link1">link 1</a></li>
+                    <li><a href="#link2">here is link 2</a></li>
+                    <li><a href="#link3">and link 3</a></li>
+                </ul>
+            </li>
+          </ul>
+        </div>
+
+        <br><br>
+
+       ex: (resize browser/use emulator)<br>
+      <div class="wrapperCTA">
+        <ul class="CTAmenu">
+          <li class="CTAlist" data-color-at-lg="black" data-color-at-md="white" data-background="translucent black">
+              <a class="CTAbutton" href="javascript:void(0)">button <span class="plusMinus"></span></a>
+              <ul class="CTAdropdownList">
+                  <li><a href="#link">link 1</a></li>
+                  <li><a href="#link">link 2</a></li>
+              </ul>
+          </li>
+        </ul>
+      </div>
+
+      <script src="https://gist.github.com/anonymous/97a6073fc29d0958a97d18ed33323b09.js"></script>
+
+
+      
+     
+
+
+
+
+
+
+  <hr>
+
+
+  <h2 id="fontSize">Font Sizes</h2><br>
+  Append the data-font attribute on the wrapping div: data-font="80" - data-font="120" by increments of 10. 
+
+
+  <br><br>
+
+  <b>100% aka data-font="100"  =  14px (roughly)</b>
+
+  <br>
+
+
+
+    <!--buttons-->
+    <div class="wrapperCTA" data-font="80">
+        <ul class="CTAmenu">
+            <li class="CTAlist" data-color="black">
+                <a class="CTAbutton" href="javascript:void(0)">80%</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="wrapperCTA" data-font="90">
+        <ul class="CTAmenu">
+            <li class="CTAlist" data-color="black" >
+                <a class="CTAbutton" href="javascript:void(0)">90%</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="wrapperCTA" data-font="100">
+        <ul class="CTAmenu">
+            <li class="CTAlist" data-color="black">
+                <a class="CTAbutton" href="javascript:void(0)">100%</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="wrapperCTA" data-font="110">
+        <ul class="CTAmenu">
+            <li class="CTAlist" data-color="black">
+                <a class="CTAbutton" href="javascript:void(0)">110%</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="wrapperCTA" data-font="120">
+        <ul class="CTAmenu">
+            <li class="CTAlist" data-color="black">
+                <a class="CTAbutton" href="javascript:void(0)">120%</a>
+            </li>
+        </ul>
+    </div>
+
+
+  <script src="https://gist.github.com/anonymous/b83aa020fdc235c432ffa03a1465ee3c.js"></script>
+
+  <hr>
+
+
+
+
+  <h2 id="listStyles">List styles</h2>
+
+  <h3>1. Dropdown into block list. </h3><br>
+  Also available: <b>data-style-at-lg="list"</b> and <b>data-style-at-md="list"</b><br>
+
+  <div class="wrapperCTA">
+      <ul class="CTAmenu">
+          <li class="CTAlist" data-color="white" data-style="list">
+              <ul class="CTAdropdownList">
+                  <li><a href="#link1">link 1</a></li>
+                  <li><a href="#link2">link 2</a></li>
+                  <li><a href="#link3">link 3</a></li>
+              </ul>
+          </li>
+      </ul>
+  </div>
+
+  <script src="https://gist.github.com/anonymous/7af4cb4ff2ec1f1af0da6894f4006ce6.js"></script>
+
+  <br><br>
+
+
+  <h3>1b. Dropdown into block list of varying widths with padding. </h3><br>
+  Also available: <b>data-list-style="inline-block"</b> <br>
+
+
+
+  <div class="wrapperCTA">
+      <ul class="CTAmenu">
+          <li class="CTAlist" data-color="black" data-style="list" data-list-style="inline-block">
+              <ul class="CTAdropdownList">
+                  <li><a href="#link1">link 1</a></li>
+                  <li><a href="#link2">link 2 here</a></li>
+                  <li><a href="#link3">and this is link 3</a></li>
+              </ul>
+          </li>
+      </ul>
+  </div>
+
+  <script src="https://gist.github.com/anonymous/c7b200c3bd4ed250e0de478ef2307773.js"></script>
+
+  <br><br>
+
+  <h3>2. Dropdown into text list. </h3>
+  Also available: <b>data-border-at-lg="none"</b>, <b>data-border-at-md="none"</b><br>
+
+
+  <div class="wrapperCTA">
+        <ul class="CTAmenu">
+            <li class="CTAlist" data-color="black" data-style="list" data-border="none">
+                <ul class="CTAdropdownList">
+                    <li><a href="#link1">link 1</a></li>
+                    <li><a href="#link2">link 2</a></li>
+                    <li><a href="#link3">link 3</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+<script src="https://gist.github.com/anonymous/64fd42f360e9d27f6bab71dff69244fe.js"></script>
+
+  <br><br>
+
+
+  <h3>3. Dropdown into 1/2 width block list.</h3>
+  Pair <b>data-size="half"</b> with <b>data-style="list"</b>. <br>
+  Also available: <b>data-size-at-lg="half"</b>, <b>data-size-at-md="half"</b>, <b>data-style-at-lg="list"</b>, <b>data-style-at-md="list"</b><br>
+
+
+  <!--dropdown -->
+  <div class="wrapperCTA">
+      <ul class="CTAmenu" data-size="half">
+          <li class="CTAlist" data-color="white" data-style="list">
+              <ul class="CTAdropdownList">
+                  <li><a href="#link1">link 1</a></li>
+                  <li><a href="#link2">link 2</a></li>
+                  <li><a href="#link3">link 3</a></li>
+                  <li><a href="#link3">link 4</a></li>
+              </ul>
+          </li>
+      </ul>
+  </div>
+
+<script src="https://gist.github.com/anonymous/982f080a632ced8347d6eb2869d89aec.js"></script>
+
+
+
+
+  <h3>4. Dropdown into 1/2 width text list. </h3>
+  Pair <b>data-size="half"</b> with <b>data-style="list"</b> and <b>data-border="none"</b>. <br>
+  Also available: <b>data-size-at-lg="half"</b>, <b>data-size-at-md="half"</b>, <b>data-style-at-lg="list"</b>, <b>data-style-at-md="list"</b>, <b>data-border-at-lg="none"</b>, <b>data-border-at-md="none"</b><br>
+
+
+  <div class="wrapperCTA">
+      <ul class="CTAmenu" data-size="half">
+          <li class="CTAlist" data-color="black" data-style="list" data-border="none" data-hover="none">
+              <ul class="CTAdropdownList">
+                  <li><a href="#link1">link 1</a></li>
+                  <li><a href="#link2">link 2</a></li>
+                  <li><a href="#link3">link 3</a></li>
+                  <li><a href="#link4">link 4</a></li>
+              </ul>
+          </li>
+      </ul>
+  </div>
+
+  <script src="https://gist.github.com/anonymous/0128dff76d5c57a0789786491994a1ec.js"></script>
+
+
+  <br><br>
+
+
+  <h3>5. Dropdown into Creative Style1 1/2 width list</h3>
+  Pair <b>data-style="list"</b> with <b>data-border="dividers"</b><br>
+  Also Available: <b>data-border-at-lg="dividers"</b>, <b>data-border-at-md="dividers"</b>
+
+  <!--dropdown-->
+  <div class="wrapperCTA">
+    <ul class="CTAmenu" data-size="half">
+        <li class="CTAlist" data-color="black" data-style="list" data-border="dividers" data-hover="none">
+          <ul class="CTAdropdownList">
+              <li><a href="#link1">link 1</a></li>
+              <li><a href="#link2">link 2</a></li>
+              <li><a href="#link3">link 3</a></li>
+              <li><a href="#link4">link 4</a></li>
+          </ul>
+        </li>
+    </ul>
+  </div>
+
+  <script src="https://gist.github.com/anonymous/e3031a3f222d9648804c77003895e998.js"></script>
+
+
+
+  <br><hr><br>
+
+
+  <h2 id="inlineList">Inline list.</h2>
+
+  <h3>1. Block Inline list</h3> 
+  Use <b>data-style="inline list"</b><br>
+  Also available: <b>data-style-at-lg="inline list"</b>, <b>data-style-at-md="inline list"</b><br>
+
+  <div class="wrapperCTA">
+      <ul class="CTAmenu">
+          <li class="CTAlist" data-color="black" data-style="inline list">
+              <ul class="CTAdropdownList">
+              <li><a href="#link1">link1</a></li>
+              <li><a href="#link2">link2</a></li>
+              <li><a href="#link3">link4</a></li>
+              </ul>
+          </li>
+      </ul>
+  </div>
+
+  <script src="https://gist.github.com/anonymous/015136546692b1a13c87f7bee6046036.js"></script>
+
+  <br><br>
+  <h3>2. Inline text list.</h3>
+  Pair <b>data-style="inline list"</b> with <b>data-border="none"</b><br>
+  Also available: <b>data-style-at-lg="inline list"</b>, <b>data-style-at-md="inline list"</b>, <b>data-border-at-lg="none"</b>, <b>data-border-at-md="none"</b><br>
+
+  <div class="wrapperCTA">
+    <ul class="CTAmenu">
+      <li class="CTAlist" data-color="gap blue" data-style="inline list" data-border="none" data-hover="none">
+          <ul class="CTAdropdownList">
+              <li><a href="#link1">link1</a></li>
+              <li><a href="#link2">link2</a></li>
+              <li><a href="#link3">link4</a></li>
+          </ul>
+      </li>
+    </ul>
+  </div>
+
+  <script src="https://gist.github.com/anonymous/d1c5bb5434f8cab488f90720adbd0501.js"></script>
+
+
+  <br><br>
+  <h3>3. Inline text list with pipelines</h3>
+   Add <b>data-pipes="true"</b><br>
+  Also available: <b>data-pipes-at-lg="true"</b>, <b>data-pipes-at-md="true"</b><br>
+
+
+  <!--dropdown-->
+  <div class="wrapperCTA">
+      <ul class="CTAmenu">
+          <li class="CTAlist" data-color="black" data-pipes="true" data-style="inline list" data-border="none" data-hover="none">
+              <ul class="CTAdropdownList">
+              <li><a href="#link1">link1</a></li>
+              <li><a href="#link2">link2</a></li>
+              <li><a href="#link3">link4</a></li>
+              </ul>
+          </li>
+      </ul>
+  </div>
+
+  <script src="https://gist.github.com/anonymous/f26b851ef54ea325ca4b98bce3408f37.js"></script>
+
+
+  <br><br>
+  <h3>3b. Inline text list with manually added pipelines. </h3>
+  <xmp><span class="pipe"></span></xmp>
+  Also avaialble: <b>class="pipe-at-md"</b> and <b>class="pipe-at-lg"</b>
+
+  <!--dropdown-->
+  <div class="wrapperCTA">
+      <ul class="CTAmenu">
+          <li class="CTAlist" data-color="black" data-style="inline list" data-border="none" data-hover="none">
+              <ul class="CTAdropdownList">
+                  <li><a href="#link1">link1</a></li>
+                  <li><span class="pipe"></span><a href="#link2">link2</a></li>
+                  <li><span class="pipe"></span><a href="#link3">link4</a></li>
+              </ul>
+          </li>
+      </ul>
+  </div>
+
+  <script src="https://gist.github.com/anonymous/530242465ff00c5f2821febcceca8213.js"></script>
+
+
+
+  <br>
+  <hr>
+  <br>
+
+  <h2 style="color:red">Examples</h2>
+  <h3><u>example 1</u>: 2 column boxed list on mobile, inline-list with pipes on desktop</h3>
+
+  <div class="wrapperCTA">
+      <ul class="CTAmenu" data-size-at-md="half">
+          <li class="CTAlist" data-color="black" data-pipes-at-lg="true" data-style-at-md="list" data-style-at-lg="inline list"  data-border-at-lg="none">
+              <ul class="CTAdropdownList">
+                <li><a href="#link1">link1</a></li>
+                <li><a href="#link2">link2</a></li>
+                <li><a href="#link2">link3</a></li>
+                <li><a href="#link3">link4</a></li>
+              </ul>
+          </li>
+      </ul>
+  </div>
+
+  <script src="https://gist.github.com/anonymous/a59b81c3c3f1bafda70e36ceca55a254.js"></script>
+
+
+  <h3 id="examples"><u>example 2</u>: 2 column stylized list on mobile, dropdown on desktop</h3>
+
+  <div class="wrapperCTA">
+      <ul class="CTAmenu" data-size-at-md="half">
+          <li class="CTAlist" data-color="black" data-style-at-md="list" data-border-at-md="dividers">
+            <a class="CTAbutton" href="javascript:void(0)">Dropdown <span class="plusMinus"></span></a>
+              <ul class="CTAdropdownList">
+                <li><a href="#link1">link1</a></li>
+                <li><a href="#link2">link2</a></li>
+                <li><a href="#link2">link3</a></li>
+                <li><a href="#link3">link4</a></li>
+              </ul>
+          </li>
+      </ul>
+  </div>
+
+  <script src="https://gist.github.com/anonymous/ef7ba0074b49a387d1f200346c37fd76.js"></script>
+
+
+  </div>
+
+
+ <footer>
+      </footer>
+
+
+    </div><!-- end content div -->
+  </body>
+
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="wcd-CTAdropdowns.js"></script>
+</html>

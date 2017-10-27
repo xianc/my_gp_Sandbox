@@ -1,0 +1,390 @@
+/********************************************
+              HOLIDAY COLORS
+********************************************/
+/*light red*/
+.CTAlist[data-color="holiday red2"] a{
+  color: #000;
+  border-color:#EF473D;
+  background:transparent;
+}
+.CTAlist[data-color="holiday red2 inverse"] a, 
+.CTAlist[data-color="holiday red2 inverse"] .plusMinus{
+  color: #fff;
+  border-color:#EF473D;
+  background-color:#EF473D;
+}
+/*dark red */
+.CTAlist[data-color="holiday red"] a{
+  color: #000;
+  border-color: #cf102d;
+  background-color: transparent;
+}
+.CTAlist[data-color="holiday red inverse"] a, 
+.CTAlist[data-color="holiday red inverse"] .plusMinus{
+  color: #fff;
+  border-color:#cf102d;
+  background-color:#cf102d;
+}
+/*green*/
+.CTAlist[data-color="holiday green"] a{
+  color: #000;
+  border-color:#2B7051;
+  background:transparent;
+}
+.CTAlist[data-color="holiday green inverse"] a, 
+.CTAlist[data-color="holiday green inverse"] .plusMinus{
+  color: #fff;
+  border-color:#2B7051;
+  background-color:#2B7051;
+}
+/*blue*/
+.CTAlist[data-color="holiday blue"] a{
+  color: #000;
+  border-color:#7CAAAD;
+  background:transparent;
+}
+.CTAlist[data-color="holiday blue inverse"] a, 
+.CTAlist[data-color="holiday blue inverse"] .plusMinus{
+  color: #fff;
+  border-color:#7CAAAD;
+  background-color:#7CAAAD;
+}
+/*teal*/
+.CTAlist[data-color="holiday yellow"] a{
+  color: #000;
+  border-color:#FFB81D;
+  background:transparent;
+}
+.CTAlist[data-color="holiday yellow inverse"] a, 
+.CTAlist[data-color="holiday yellow inverse"] .plusMinus{
+  color: #fff;
+  border-color:#FFB81D;
+  background-color:#FFB81D;
+}
+
+
+
+/********************************************
+              DIV NAV STYLE
+********************************************/
+
+.CTAlist[data-color="divNav"]{
+  padding-bottom:0;
+  margin:0;
+  margin-top:-1%;
+}
+.CTAlist[data-color="divNav"] *{
+  color: #2b7051;
+  border-color: transparent transparent transparent transparent;
+}
+.CTAlist[data-color="divNav"] .CTAbutton,.CTAlist[data-color="divNav"] .CTAbutton:hover{
+  border-bottom:1px solid #ccc ;
+  background-color: transparent;
+}
+.CTAlist[data-color="divNav"] .plusMinus,.CTAlist[data-color="divNav"] .plusMinus:hover{
+  background-color: transparent;
+  color:#2b7051;
+}
+.CTAmenu li.CTAlist[data-color="divNav"] ul.CTAdropdownList li > a{
+  margin-top:0;
+  text-transform: none;
+}
+.CTAmenu li.CTAlist[data-color="divNav"] ul.CTAdropdownList li > a:first-letter{
+  text-transform: uppercase;
+}
+.CTAmenu .CTAlist[data-color="divNav"] li{
+  background: #f3f3f3;
+  border-bottom:1px solid #ccc;
+  text-align: center;
+}
+.CTAlist[data-color="divNav"] a:hover,
+.CTAlist[data-color="divNav"] a:focus, 
+.CTAlist[data-color="divNav"] a:active {
+  color: #2b7051;
+  border-color:transparent;
+  background-color:transparent;
+}
+
+
+
+
+/* DESKTOP STYLES */
+@media (min-width: 768px){
+  .CTAlist[data-color="divNav"][data-style-at-lg="list"]{
+    margin-top:.7em;
+  }
+  .CTAlist[data-color="divNav"][data-style-at-lg="list"] .CTAbutton{
+    color: #2B7051;
+    display:initial;
+    border-bottom:0;
+  }
+  .CTAlist[data-color="divNav"][data-style-at-lg="list"] .plusMinus{
+    display:none;
+  }
+  .CTAlist[data-color="divNav"][data-style-at-lg="list"] .CTAdropdownList{
+    margin-top:.7em;
+  }
+  .CTAlist[data-color="divNav"][data-style-at-lg="list"] li{
+    background: transparent;
+    border-bottom:0;
+    text-align: left;
+  }
+
+  .CTAlist[data-color="divNav"][data-style-at-lg="list"] li a{
+    font-weight: 300;
+    color:#666;
+    padding: .7em 1em;
+    letter-spacing: normal;
+  }
+
+      /*Holiday Default Hover Styles*/
+      .CTAlist[data-color="holiday red2"] a:hover,
+      .CTAlist[data-color="holiday red2"] a:hover *,
+      .CTAlist[data-color="holiday red2"] a:focus, 
+      .CTAlist[data-color="holiday red2"] a:active {
+        color: #fff;
+        background-color:#EF473D;
+        border-color:#EF473D;
+      }
+      .CTAlist[data-color="holiday red"] a:hover,
+      .CTAlist[data-color="holiday red"] a:hover *,
+      .CTAlist[data-color="holiday red"] a:focus, 
+      .CTAlist[data-color="holiday red"] a:active {
+        color: #fff;
+        background-color:#c52334;
+        border-color:#c52334;
+      }
+      .CTAlist[data-color="holiday green"] a:hover,
+      .CTAlist[data-color="holiday green"] a:hover *,
+      .CTAlist[data-color="holiday green"] a:focus, 
+      .CTAlist[data-color="holiday green"] a:active {
+        color: #fff;
+        background-color:#2B7051;
+        border-color:#2B7051;
+      }
+      .CTAlist[data-color="holiday blue"] a:hover,
+      .CTAlist[data-color="holiday blue"] a:hover *,
+      .CTAlist[data-color="holiday blue"] a:focus, 
+      .CTAlist[data-color="holiday blue"] a:active {
+        color: #fff;
+        background-color:#7CAAAD;
+        border-color:#7CAAAD;
+      }
+
+      .CTAlist[data-color="holiday yellow"] a:hover,
+      .CTAlist[data-color="holiday yellow"] a:hover *,
+      .CTAlist[data-color="holiday yellow"] a:focus, 
+      .CTAlist[data-color="holiday yellow"] a:active {
+        color: #fff;
+        background-color:#FFB81D;
+        border-color:#FFB81D;
+      }
+
+
+      /* DEFAULT NO HOVER */
+      .CTAlist[data-color="holiday red2"][data-hover="none"] a:hover,
+      .CTAlist[data-color="holiday red2"][data-hover="none"] a:focus, 
+      .CTAlist[data-color="holiday red2"][data-hover="none"] a:active {
+        border-color:#EF473D;
+        background-color:transparent;
+      }
+      .CTAlist[data-color="holiday red2 inverse"][data-hover="none"] a:hover,
+      .CTAlist[data-color="holiday red2 inverse"][data-hover="none"] a:focus, 
+      .CTAlist[data-color="holiday red2 inverse"][data-hover="none"] a:active {
+        color: #fff !important;
+        border-color:#EF473D;
+        background-color:#EF473D;
+      }
+      .CTAlist[data-color="holiday red"][data-hover="none"] a:hover,
+      .CTAlist[data-color="holiday red"][data-hover="none"] a:focus, 
+      .CTAlist[data-color="holiday red"][data-hover="none"] a:active {
+        border-color:#c52334;
+        background-color:transparent;
+      }
+      .CTAlist[data-color="holiday red inverse"][data-hover="none"] a:hover,
+      .CTAlist[data-color="holiday red inverse"][data-hover="none"] a:focus, 
+      .CTAlist[data-color="holiday red inverse"][data-hover="none"] a:active {
+        color: #fff !important;
+        border-color:#c52334;
+        background-color:#c52334;
+      }
+      .CTAlist[data-color="holiday green"][data-hover="none"] a:hover,
+      .CTAlist[data-color="holiday green"][data-hover="none"] a:focus, 
+      .CTAlist[data-color="holiday green"][data-hover="none"] a:active {
+        border-color:#2B7051;
+        background-color:transparent;
+      }
+      .CTAlist[data-color="holiday green inverse"][data-hover="none"] a:hover,
+      .CTAlist[data-color="holiday green inverse"][data-hover="none"] a:focus, 
+      .CTAlist[data-color="holiday green inverse"][data-hover="none"] a:active {
+        color: #fff !important;
+        border-color:#2B7051;
+        background-color:#2B7051;
+      }
+      .CTAlist[data-color="holiday blue"][data-hover="none"] a:hover,
+      .CTAlist[data-color="holiday blue"][data-hover="none"] a:focus, 
+      .CTAlist[data-color="holiday blue"][data-hover="none"] a:active {
+        border-color:#7CAAAD;
+        background-color:transparent;
+      }
+      .CTAlist[data-color="holiday blue inverse"][data-hover="none"] a:hover,
+      .CTAlist[data-color="holiday blue inverse"][data-hover="none"] a:focus, 
+      .CTAlist[data-color="holiday blue inverse"][data-hover="none"] a:active {
+        color: #fff !important;
+        border-color:#7CAAAD;
+        background-color:#7CAAAD;
+      }
+      .CTAlist[data-color="holiday yellow"][data-hover="none"] a:hover,
+      .CTAlist[data-color="holiday yellow"][data-hover="none"] a:focus, 
+      .CTAlist[data-color="holiday yellow"][data-hover="none"] a:active {
+        border-color:#FFB81D;
+        background-color:transparent;
+      }
+      .CTAlist[data-color="holiday yellow inverse"][data-hover="none"] a:hover,
+      .CTAlist[data-color="holiday yellow inverse"][data-hover="none"] a:focus, 
+      .CTAlist[data-color="holiday yellow inverse"][data-hover="none"] a:active {
+        color: #fff !important;
+        border-color:#FFB81D;
+        background-color:#FFB81D;
+      }
+
+
+
+
+
+    .CTAlist[data-color-at-lg="holiday red2"] a{
+      color: #000;
+      border-color:#EF473D;
+      background: transparent !important;
+    }
+    .CTAlist[data-color-at-lg="holiday red2 inverse"] a, 
+    .CTAlist[data-color-at-lg="holiday red2 inverse"] .plusMinus{
+      color: #fff;
+      border-color:#EF473D;
+      background-color:#EF473D;
+    }
+    /*dark red */
+    .CTAlist[data-color-at-lg="holiday red"] a:link{
+      color: #000;
+      border-color: #cf102d;
+      background:transparent !important;
+    }
+    .CTAlist[data-color-at-lg="holiday red inverse"] a, 
+    .CTAlist[data-color-at-lg="holiday red inverse"] .plusMinus{
+      color: #fff;
+      border-color:#cf102d;
+      background-color:#cf102d;
+    }
+    /*green*/
+    .CTAlist[data-color-at-lg="holiday green"] a, 
+    .CTAlist[data-color-at-lg="holiday green inverse"] .plusMinus{
+      color: #000;
+      border-color:#2B7051;
+      background:transparent !important;
+    }
+    .CTAlist[data-color-at-lg="holiday green inverse"] a{
+      color: #fff;
+      border-color:#2B7051;
+      background-color:#2B7051;
+    }
+    /*blue*/
+    .CTAlist[data-color-at-lg="holiday blue"] a{
+      color: #000;
+      border-color:#7CAAAD;
+      background-color: transparent !important;
+    }
+    .CTAlist[data-color-at-lg="holiday blue inverse"] a, 
+    .CTAlist[data-color-at-lg="holiday blue inverse"] .plusMinus{
+      color: #fff;
+      border-color:#7CAAAD;
+      background-color:#7CAAAD;
+    }
+    /*teal*/
+    .CTAlist[data-color-at-lg="holiday yellow"] a{
+      color: #000;
+      border-color:#FFB81D;
+      background-color: transparent !important;
+    }
+    .CTAlist[data-color-at-lg="holiday yellow inverse"] a, 
+    .CTAlist[data-color-at-lg="holiday yello inverse"] .plusMinus{
+      color: #fff;
+      border-color:#FFB81D;
+      background-color:#FFB81D;
+    }
+
+
+
+
+
+
+      
+      /* AT LARGE NO HOVER */
+      .CTAlist[data-color-at-lg="holiday red2"][data-hover="none"] a:hover,
+      .CTAlist[data-color-at-lg="holiday red2"][data-hover="none"] a:focus, 
+      .CTAlist[data-color-at-lg="holiday red2"][data-hover="none"] a:active {
+        border-color:#EF473D;
+        background-color:transparent;
+      }
+      .CTAlist[data-color-at-lg="holiday red2 inverse"][data-hover="none"] a:hover,
+      .CTAlist[data-color-at-lg="holiday red2 inverse"][data-hover="none"] a:focus, 
+      .CTAlist[data-color-at-lg="holiday red2 inverse"][data-hover="none"] a:active {
+        color: #fff !important;
+        border-color:#EF473D;
+        background-color:#EF473D;
+      }
+      .CTAlist[data-color-at-lg="holiday red"][data-hover="none"] a:hover,
+      .CTAlist[data-color-at-lg="holiday red"][data-hover="none"] a:focus, 
+      .CTAlist[data-color-at-lg="holiday red"][data-hover="none"] a:active {
+        border-color:#cf102d;
+        background-color:transparent;
+      }
+      .CTAlist[data-color-at-lg="holiday red inverse"][data-hover="none"] a:hover,
+      .CTAlist[data-color-at-lg="holiday red inverse"][data-hover="none"] a:focus, 
+      .CTAlist[data-color-at-lg="holiday red inverse"][data-hover="none"] a:active {
+        color: #fff !important;
+        border-color:#cf102d;
+        background-color:#cf102d;
+      }
+      .CTAlist[data-color-at-lg="holiday green"][data-hover="none"] a:hover,
+      .CTAlist[data-color-at-lg="holiday green"][data-hover="none"] a:focus, 
+      .CTAlist[data-color-at-lg="holiday green"][data-hover="none"] a:active {
+        border-color:#2B7051;
+        background-color:transparent;
+      }
+      .CTAlist[data-color-at-lg="holiday green inverse"][data-hover="none"] a:hover,
+      .CTAlist[data-color-at-lg="holiday green inverse"][data-hover="none"] a:focus, 
+      .CTAlist[data-color-at-lg="holiday green inverse"][data-hover="none"] a:active {
+        color: #fff !important;
+        border-color:#2B7051;
+        background-color:#2B7051;
+      }
+      .CTAlist[data-color-at-lg="holiday blue"][data-hover="none"] a:hover,
+      .CTAlist[data-color-at-lg="holiday blue"][data-hover="none"] a:focus, 
+      .CTAlist[data-color-at-lg="holiday blue"][data-hover="none"] a:active {
+        border-color:#7CAAAD;
+        background-color:transparent;
+      }
+      .CTAlist[data-color-at-lg="holiday blue inverse"][data-hover="none"] a:hover,
+      .CTAlist[data-color-at-lg="holiday blue inverse"][data-hover="none"] a:focus, 
+      .CTAlist[data-color-at-lg="holiday blue inverse"][data-hover="none"] a:active {
+        color: #fff !important;
+        border-color:#7CAAAD;
+        background-color:#7CAAAD;
+      }
+      .CTAlist[data-color-at-lg="holiday yellow"][data-hover="none"] a:hover,
+      .CTAlist[data-color-at-lg="holiday yellow"][data-hover="none"] a:focus, 
+      .CTAlist[data-color-at-lg="holiday yellow"][data-hover="none"] a:active {
+        border-color:#FFB81D;
+        background-color:transparent;
+      }
+      .CTAlist[data-color-at-lg="holiday yellow inverse"][data-hover="none"] a:hover,
+      .CTAlist[data-color-at-lg="holiday yellow inverse"][data-hover="none"] a:focus, 
+      .CTAlist[data-color-at-lg="holiday yellow inverse"][data-hover="none"] a:active {
+        color: #fff !important;
+        border-color:#FFB81D;
+        background-color:#FFB81D;
+      }
+
+}
+
+

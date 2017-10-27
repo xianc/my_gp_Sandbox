@@ -1,0 +1,810 @@
+
+/*========================================================================================
+              CTA DROPDOWN & ACORDIAN
+========================================================================================
+* CHANGE LOG 1/04  :
+* - JP half dropdown syntax update
+*
+* 1. Foundation Rules
+* 2. Foundation Dropdown Rules
+* 3. Symbols & Addons
+*   a. plus minus
+*   b. caret
+* 4. Font & Border Colors
+* 5. Background Colors
+* 6. Hover Effects
+* 7. Font sizes
+* 8. Half Dropdowns & CTAs
+*   a. mobile half CTAS
+*   b. japan's half dropdowns
+* 9. List Styles
+* 10. Special separators
+*   a. pipes
+*     a. manual added pipes
+*   b. dividers
+*/
+
+/*========================================================================================
+                       1. FOUNDATION RULES 
+========================================================================================*/
+ul.CTAmenu, 
+.CTAbutton,
+.plusMinus, 
+.caret, 
+.pipe,
+.pipe-at-md,
+.pipe-at-lg{
+  display:inline-block;
+  position:relative;
+} 
+
+@media(min-width:768px){
+  .wrapperCTA, 
+  .CTAwrapper{
+    display: inline;
+    white-space: nowrap;
+  }
+}
+
+ul.CTAmenu *{
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  text-transform:uppercase;
+  text-decoration: none;
+
+  font-size:1em;
+  letter-spacing:1px;
+  font-weight: 500;
+}
+
+ul.CTAmenu{
+  margin-top:.5em;
+  padding: 0;
+  list-style:none; 
+}
+
+ul.CTAmenu a{ /* remove default underline*/
+  text-decoration:none;
+}
+
+ul.CTAmenu > li.CTAlist{
+  margin-top:3%;
+}
+ul.CTAmenu > li.CTAlist:only-child{
+  margin-top:0;
+}
+ul.CTAmenu > li.CTAlist:not(:only-child){
+  float:left;
+}
+
+/* button / top level dropdown menu */
+ul.CTAmenu > li.CTAlist > a:first-child{ display:inline-block; } /*override to accomodate adult DPs*/
+ul.CTAmenu > li.CTAlist > a:first-child, /*override to accomodate adult DPs*/
+ul.CTAmenu > li.CTAlist > .CTAbutton {
+  padding: .8em 1em;
+  border:2px solid;
+  box-sizing: border-box;
+  text-align: center;
+  width:100%; /* expand button to longest list item */
+}
+
+
+@media (min-width:768px){
+  ul.CTAmenu > li.CTAlist{
+    border-right: 1em solid transparent;
+  }
+
+  .CTAmenu > .CTAlist[data-style="inline list"] > ul.CTAdropdownList, 
+  .CTAmenu > .CTAlist[data-style="inline list"] > ul.CTAdropdownList li, 
+  .CTAmenu > .CTAlist[data-style="inline list"] > ul.CTAdropdownList li a,
+  .CTAmenu > .CTAlist[data-style-at-lg="inline list"] > ul.CTAdropdownList, 
+  .CTAmenu > .CTAlist[data-style-at-lg="inline list"] > ul.CTAdropdownList li, 
+  .CTAmenu > .CTAlist[data-style-at-lg="inline list"] > ul.CTAdropdownList li a{
+    margin-bottom: 1.5%;
+  }
+}
+@media (max-width: 767px){
+  .wrapperCTA,
+  .CTAwrapper{
+    margin:0 auto;
+    text-align: center;
+  }
+  ul.CTAmenu {
+    width:96%;
+    margin: 1% 2%;
+  }
+  ul.CTAmenu > li.CTAlist{
+    width:100%;
+    margin:1% 0;
+  }
+  ul.CTAmenu > li.CTAlist > a:first-child, /*override for adult DPs */
+  ul.CTAmenu > li.CTAlist .CTAbutton{
+    width:100%;
+  }
+
+}
+
+
+/*========================================================================================
+                       2. FOUNDATION DROPDOWN 
+========================================================================================*/
+ul.CTAmenu >li.CTAlist > ul.CTAdropdownList {
+  list-style: none; 
+  padding:0;
+
+  top: 3.45em;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+
+  transition: all .2s;
+  cursor:default;
+}
+
+ul.CTAmenu > li.CTAlist.show-menu > ul.CTAdropdownList {
+  left: 0;
+  opacity: 1;
+  pointer-events: auto;
+  cursor:pointer;
+  height:auto;
+}
+
+/* dropdown style */
+ul.CTAmenu > li.CTAlist > ul.CTAdropdownList li a {
+  display:block; 
+  border:2px solid;
+  box-sizing: border-box;
+  margin-top:-2px;
+}
+
+ul.CTAmenu > li.CTAlist a{ /* default color */
+  color:#000;
+}
+
+@media (min-width:768px){
+  ul.CTAmenu > li.CTAlist a:hover + ul.CTAdropdownList,
+  ul.CTAmenu > li.CTAlist a:focus + ul.CTAdropdownList,
+  ul.CTAmenu > li.CTAlist > ul.CTAdropdownList:hover, 
+  ul.CTAmenu > li.CTAlist > ul.CTAdropdownList:focus{
+    left: 0;
+    opacity: 1;
+    pointer-events: auto;
+    cursor:pointer;
+  }
+
+  ul.CTAmenu > li.CTAlist > ul.CTAdropdownList li a {
+    padding: .8em .9em;
+  }
+}
+@media (max-width:767px){
+  ul.CTAmenu > li.CTAlist > ul.CTAdropdownList li a {
+    padding: .9em;
+  }
+
+  ul.CTAmenu > li.CTAlist > ul.CTAdropdownList li{ 
+    font-size: .9em;
+  }
+  ul.CTAmenu > li.CTAlist > ul.CTAdropdownList{
+    display:none;
+    height:0;
+  }
+  ul.CTAmenu.show-menu > li.CTAlist > ul.CTAdropdownList{
+    height:auto;
+  }
+  ul.CTAmenu > li.CTAlist.show-menu > ul.CTAdropdownList {
+    display: block !important;
+  }
+}
+
+
+
+
+/*========================================================================================
+                       3. SYMBOLS & ADD ONS 
+========================================================================================*/
+
+/*======= a. plus minus =========*/
+
+
+.CTAbutton .plusMinus{
+  width: 1em;
+  padding:0;
+}
+.CTAbutton .plusMinus::before{
+  content: '+';
+}
+
+@media (min-width:768px){
+  .CTAbutton:hover .plusMinus::before{
+    content: '-';
+  }
+ /*button half */
+  .CTAmenu[data-size="half"]{
+    display:inline;
+    width:100%;
+  }
+}
+@media (max-width:767px){
+  .show-menu .CTAbutton .plusMinus::before{
+    content: '-';
+  } 
+}
+
+
+/*======== b. caret =========*/
+span.caret{
+  margin-left:5px;
+  border:#000d42 5px solid;
+  border-color:transparent transparent transparent #000d42 !important;
+}
+
+
+
+
+
+/*========================================================================================
+                       4. FONT & BORDER COLOR
+========================================================================================*/
+/*white*/
+ul.CTAmenu > li.CTAlist[data-color="white"] a{
+  color: #fff;
+  border-color:#fff;
+}
+/*gap blue*/
+ul.CTAmenu > li.CTAlist[data-color="gap blue"] a{
+  color: #000d42;
+  border-color:#000d42;
+}
+/*black*/
+ul.CTAmenu > li.CTAlist[data-color="black"] a{
+  color: #000;
+  border-color:#000;
+}
+/*black*/
+ul.CTAmenu > li.CTAlist[data-color="spring blue"] a{ /* edits for the spring */
+  color: #609bc7;
+}
+
+
+
+@media (min-width: 768px){ /* default colours at large */
+  ul.CTAmenu > li.CTAlist[data-color-at-lg="white"] a{
+    color: #fff;
+    border-color:#fff;
+  }
+  ul.CTAmenu > li.CTAlist[data-color-at-lg="gap blue"] a{
+    color: #000d42;
+    border-color:#000d42;
+  }
+  ul.CTAmenu > li.CTAlist[data-color-at-lg="black"] a{
+    color: #000;
+    border-color:#000;
+  }
+  ul.CTAmenu > li.CTAlist[data-color-at-lg="spring blue"] a{ /* edits for the spring */
+    color: #609bc7;
+    border-color:#609bc7;
+  }
+}
+
+
+
+/*========================================================================================
+                       5. BACKGROUND COLORS
+========================================================================================*/
+ul.CTAmenu > li.CTAlist[data-background="transparent"] a{
+  background-color: transparent;
+}
+ul.CTAmenu > li.CTAlist[data-background="translucent black"] > ul.CTAdropdownList li,
+ul.CTAmenu > li.CTAlist[data-background="translucent black"] .CTAbutton{
+  background-color: rgba(0, 0, 0, 0.4);
+}
+ul.CTAmenu > li.CTAlist[data-background="translucent white"] > ul.CTAdropdownList li,
+ul.CTAmenu > li.CTAlist[data-background="translucent white"] .CTAbutton{
+  background-color: rgba(255, 255, 255, 0.5);
+}
+ul.CTAmenu > li.CTAlist[data-background="white"] a{
+  background-color: #fff;
+}
+ul.CTAmenu > li.CTAlist[data-background="gap blue"] a{
+  background-color: #000d42;
+}
+ul.CTAmenu > li.CTAlist[data-background="black"] a{
+  background-color: #000;
+}
+ul.CTAmenu > li.CTAlist[data-background="spring blue"] a{ /* edits for the spring */
+  background-color: #609bc7;
+}
+
+
+ /* no border */
+ul.CTAmenu > li.CTAlist[data-border="none"] *{
+  border:0!important;
+}
+ul.CTAmenu > li.CTAlist[data-border="none"] li a{
+  padding:.5em 1em;
+}
+ul.CTAmenu > li.CTAlist[data-border="none"] a:hover,
+ul.CTAmenu > li.CTAlist[data-border="none"] a:focus,
+ul.CTAmenu > li.CTAlist[data-border="none"] a:hover *,
+ul.CTAmenu > li.CTAlist[data-border="none"] a:focus *{
+  background: none;
+}
+
+  @media (min-width: 768px){
+    ul.CTAmenu > li.CTAlist[data-border-at-lg="none"] *{
+      border:0!important;
+    }
+    ul.CTAmenu > li.CTAlist[data-border-at-lg="none"] > ul.CTAdropdownList li a{
+      padding:.5em 1em;
+    }
+    ul.CTAmenu > li.CTAlist[data-border-at-lg="none"] a:hover,
+    ul.CTAmenu > li.CTAlist[data-border-at-lg="none"] a:focus,
+    ul.CTAmenu > li.CTAlist[data-border-at-lg="none"] a:hover *,
+    ul.CTAmenu > li.CTAlist[data-border-at-lg="none"] a:focus *{
+      background: none;
+    }
+  }
+  @media (max-width: 767px){
+    ul.CTAmenu > li.CTAlist[data-border-at-md="none"] *{
+      border:0!important;
+    }
+    ul.CTAmenu > li.CTAlist[data-border-at-md="none"] > ul.CTAdropdownList li a{
+      padding:.5em 1em;
+    }
+    ul.CTAmenu > li.CTAlist[data-border-at-md="none"] a:hover,
+    ul.CTAmenu > li.CTAlist[data-border-at-md="none"] a:focus,
+    ul.CTAmenu > li.CTAlist[data-border-at-md="none"] a:hover *,
+    ul.CTAmenu > li.CTAlist[data-border-at-md="none"] a:focus *{
+      background: none;
+    }
+  }
+
+
+
+
+/*========================================================================================
+                       6. HOVER EFFECTS
+========================================================================================*/
+/* no hover */
+ul.CTAmenu > li.CTAlist[data-hover="none"] > ul.CTAdropdownList li a:hover,
+ul.CTAmenu > li.CTAlist[data-hover="none"] > ul.CTAdropdownList li a:focus,
+ul.CTAmenu > li.CTAlist[data-hover="none"] a:hover,
+ul.CTAmenu > li.CTAlist[data-hover="none"] a:focus,
+ul.CTAmenu > li.CTAlist[data-hover="none"] a:hover *,
+ul.CTAmenu > li.CTAlist[data-hover="none"] a:focus *{
+/*  background: initial;
+  color:inherit!important;*/
+}
+
+
+
+
+/*========================================================================================
+                       7. FONT SIZES
+========================================================================================*/ 
+
+@media (min-width:1400px){
+  .wrapperCTA[data-font="80"], 
+  .CTAwrapper[data-font="80"]{ /*16px*/
+    font-size: 11.2px !important;
+  }
+  .wrapperCTA[data-font="90"], 
+  .CTAwrapper[data-font="90"]{ /*16px*/
+    font-size: 12.5px !important;
+  }
+  .wrapperCTA, 
+  .CTAwrapper,
+  .wrapperCTA[data-font="100"], 
+  .CTAwrapper[data-font="100"]{
+    font-size: 14px !important;
+  }
+  .wrapperCTA[data-font="110"], 
+  .CTAwrapper[data-font="110"]{ /*14px*/
+    font-size: 16px !important;
+  }
+  .wrapperCTA[data-font="120"], 
+  .CTAwrapper[data-font="120"]{
+    font-size: 18px !important;
+  }
+}
+@media (min-width:768px) and (max-width:1400px){
+  .wrapperCTA[data-font="80"],
+  .CTAwrapper[data-font="80"]{ /*16px*/
+    font-size: 11.2px;
+    font-size: .8vw;
+  }
+  .wrapperCTA[data-font="90"],
+  .CTAwrapper[data-font="90"]{ /*16px*/
+    font-size: 12.5px;
+    font-size: .9vw;
+  }
+  .wrapperCTA, 
+  .CTAwrapper,
+  .wrapperCTA[data-font="100"],
+  .CTAwrapper[data-font="100"]{
+    font-size: 14px;
+    font-size: 1vw;
+  }
+  .wrapperCTA[data-font="110"],
+  .CTAwrapper[data-font="110"]{ /*14px*/
+    font-size: 16px;
+    font-size: 1.15vw;
+  }
+  .wrapperCTA[data-font="120"],
+  .CTAwrapper[data-font="120"]{
+    font-size: 18px;
+    font-size: 1.25vw;
+  }
+}
+@media (max-width:767px){
+  .wrapperCTA[data-font="80"],
+  .CTAwrapper[data-font="80"]{ /*16px*/
+    font-size: 12px;
+  }
+  .wrapperCTA[data-font="90"],
+  .CTAwrapper[data-font="90"]{ /*16px*/
+    font-size: 13px;
+  }
+  .wrapperCTA, 
+  .CTAwrapper,
+  .wrapperCTA[data-font="100"],
+  .CTAwrapper[data-font="100"]{
+    font-size: 14px;
+  }
+  .wrapperCTA[data-font="110"],
+  .CTAwrapper[data-font="110"]{ /*14px*/
+    font-size: 16px;
+  }
+  .wrapperCTA[data-font="120"],
+  .CTAwrapper[data-font="120"]{
+    font-size: 18px;
+  }
+}
+
+
+
+/*========================================================================================
+                       8. HALF DROPDOWNS & CTAS
+========================================================================================*/
+
+/* a. MOBILE half buttons */
+  ul.CTAmenu[data-size="half"] > li.CTAlist, 
+  ul.CTAmenu[data-size="half"] > li.CTAlist > ul.CTAdropdownList li{ 
+    width:48%;
+    margin:1%;
+    padding:0;
+    float:left;
+    text-align: center;
+  }
+
+  ul.CTAmenu[data-size="half"] > li.CTAlist{
+    border:0;
+  }
+  ul.CTAmenu[data-size="half"] > li.CTAlist[data-style="list"],
+  ul.CTAmenu[data-size="half"] > li.CTAlist[data-style="inline list"]{
+    width:98%;
+  }
+  ul.CTAmenu[data-size="half"] > li.CTAlist[data-style="inline list"] > ul.CTAdropdownList{}
+  ul.CTAmenu[data-size="half"] > li.CTAlist[data-style="inline list"] > ul.CTAdropdownList li,
+  ul.CTAmenu[data-size="half"] > li.CTAlist[data-style="inline list"] > ul.CTAdropdownList li a{
+    display: block;
+  }
+  ul.CTAmenu[data-size="half"] >  ul.CTAdropdownList,  
+  ul.CTAmenu > li.CTAlist[data-style="list"] > ul.CTAdropdownList{
+    display:inline;
+  }
+
+
+      @media (min-width: 768px){
+        ul.CTAmenu[data-size="half"]{
+          display:inline;
+          width:98%;
+        }
+
+        ul.CTAmenu[data-size-at-lg="half"] .CTAlist{
+          border:0;
+        }
+        ul.CTAmenu[data-size-at-lg="half"] .CTAlist > ul.CTAdropdownList li{ 
+          margin:.4% .5%;
+        }
+        ul.CTAmenu[data-size-at-lg="half"] .CTAlist, 
+        ul.CTAmenu[data-size-at-lg="half"] .CTAlist > ul.CTAdropdownList li{ 
+          width:48%;
+          margin:.4% .5%;
+          padding:0;
+          float:left;
+          text-align: center;
+        }
+        ul.CTAmenu[data-size-at-lg="half"] .CTAlist[data-style-at-lg="list"], 
+        .CTAmenu[data-size-at-lg="half"] .CTAlist[data-style-at-lg="inline list"],
+        ul.CTAmenu[data-size-at-lg="half"] .CTAlist[data-style="list"], 
+        .CTAmenu[data-size-at-lg="half"] .CTAlist[data-style="inline list"]{
+          width:98%;
+        }
+        ul.CTAmenu[data-size-at-lg="half"] .CTAlist[data-style-at-lg="inline list"] > ul.CTAdropdownList,
+        .CTAmenu[data-size-at-lg="half"] .CTAlist[data-style="inline list"] > ul.CTAdropdownList,
+        ul.CTAmenu[data-size-at-lg="half"] .CTAlist[data-style-at-lg="inline list"] > ul.CTAdropdownList li, 
+        .CTAmenu[data-size-at-lg="half"] .CTAlist[data-style="inline list"] > ul.CTAdropdownList > li,
+        ul.CTAmenu[data-size-at-lg="half"] .CTAlist[data-style-at-lg="inline list"] > ul.CTAdropdownList li a, 
+        .CTAmenu[data-size-at-lg="half"] .CTAlist[data-style="inline list"] > ul.CTAdropdownList li a{
+          display: block;
+        }
+      }
+      @media (max-width: 767px){
+        ul.CTAmenu[data-size-at-md="half"] .CTAlist{
+          border:0;
+        }
+        ul.CTAmenu[data-size-at-md="half"] .CTAlist, 
+        ul.CTAmenu[data-size-at-md="half"] .CTAlist > ul.CTAdropdownList li{ 
+          width:48%;
+          margin:1%;
+          padding:0;
+          float:left;
+          text-align: center;
+        }
+        ul.CTAmenu[data-size-at-md="half"] .CTAlist[data-style-at-md="list"], 
+        .CTAmenu[data-size-at-md="half"] .CTAlist[data-style-at-md="inline list"],
+        ul.CTAmenu[data-size-at-md="half"] .CTAlist[data-style="list"], 
+        .CTAmenu[data-size-at-md="half"] .CTAlist[data-style="inline list"]{
+          width:98%;
+        }
+
+        
+        ul.CTAmenu[data-size-at-md="half"] .CTAlist[data-style-at-md="inline list"] > ul.CTAdropdownList li, 
+        .CTAmenu[data-size-at-md="half"] .CTAlist[data-style="inline list"] > ul.CTAdropdownList > li,
+        ul.CTAmenu[data-size-at-md="half"] .CTAlist[data-style-at-md="inline list"] > ul.CTAdropdownList li a, 
+        .CTAmenu[data-size-at-md="half"] .CTAlist[data-style="inline list"] > ul.CTAdropdownList > li a{
+          display: block;
+        }
+
+        ul.CTAmenu[data-size-at-md="half"] ul.CTAdropdownList{
+          display:inline;
+        }
+      }
+
+
+
+
+    /* B. MOBILE HALF DROPDOWNS FOR GAP JP */
+    @media (max-width:767px){
+      ul.CTAmenu[data-size="half dropdown"]{
+        display:inline-block;
+        width:94%;
+        margin:1% 2%;
+      }
+      ul.CTAmenu[data-size="half dropdown"] .CTAlist{
+        width:49%;
+        float:left;
+        border:0;
+      }
+      ul.CTAmenu[data-size="half dropdown"] .CTAlist:nth-child(odd){
+        margin-right:1%;
+      }
+      ul.CTAmenu[data-size="half dropdown"] .CTAlist:nth-child(even){
+        margin-left:1%;
+      }
+    }
+
+
+  
+
+
+/*========================================================================================
+                       9. LIST STYLES
+========================================================================================*/
+ul.CTAmenu > li.CTAlist[data-style="list"] .CTAbutton,
+ul.CTAmenu > li.CTAlist[data-style="inline list"] .CTAbutton{
+  display:none;
+}
+ul.CTAmenu > li.CTAlist[data-style="list"] > ul.CTAdropdownList, 
+ul.CTAmenu > li.CTAlist[data-style="inline list"] > ul.CTAdropdownList{
+  left: 0;
+  opacity: 1;
+  pointer-events: auto !important;
+
+  display:inline; /* fix spacing issue on mobile */
+}
+/* inline list - list are displayed in one line */
+/*ul.CTAmenu > li.CTAlist[data-style="inline list"]{
+  float:none;
+}*/
+/*ul.CTAmenu > li.CTAlist[data-style="inline list"] > ul.CTAdropdownList,*/
+ul.CTAmenu > li.CTAlist[data-style="inline list"] > ul.CTAdropdownList li, 
+ul.CTAmenu > li.CTAlist[data-style="inline list"] > ul.CTAdropdownList li a{
+  display: inline-block;
+}
+
+
+  @media (min-width: 768px){
+    ul.CTAmenu > li.CTAlist[data-style-at-lg="list"] .CTAbutton, 
+    ul.CTAmenu > li.CTAlist[data-style-at-lg="inline list"] .CTAbutton{ 
+      display:none; 
+    }
+    ul.CTAmenu > li.CTAlist[data-style-at-lg="list"] > ul.CTAdropdownList, 
+    ul.CTAmenu > li.CTAlist[data-style-at-lg="inline list"] > ul.CTAdropdownList{
+      left: 0;
+      opacity: 1;
+      pointer-events: auto !important;
+    }
+    /*ul.CTAmenu > li.CTAlist[data-style-at-lg="inline list"]{ 
+      float:none; 
+    }*/
+    ul.CTAmenu > li.CTAlist[data-style-at-lg="inline list"] > ul.CTAdropdownList,
+    ul.CTAmenu > li.CTAlist[data-style-at-lg="inline list"] > ul.CTAdropdownList li, 
+    ul.CTAmenu > li.CTAlist[data-style-at-lg="inline list"] > ul.CTAdropdownList li a{
+      display: inline-block;
+    }
+  }
+
+  @media (max-width: 768px){
+    ul.CTAmenu > li.CTAlist[data-style-at-md="list"] .CTAbutton, 
+    ul.CTAmenu > li.CTAlist[data-style-at-md="inline list"] .CTAbutton{ 
+      display:none; 
+    }
+
+    ul.CTAmenu > li.CTAlist[data-style-at-md="list"] > ul.CTAdropdownList, 
+    ul.CTAmenu > li.CTAlist[data-style-at-md="inline list"] > ul.CTAdropdownList{
+      left: 0;
+      opacity: 1;
+      pointer-events: auto !important;
+
+      display:inline; /* fix spacing issue on mobile */
+    }
+
+    ul.CTAmenu > li.CTAlist[data-style="list"]{
+      width:inherit;
+    }
+    ul.CTAmenu > li.CTAlist[data-style="list"] .CTAlist{
+      display:inline-block;
+    }
+  }
+
+/* inline block -- CTA is only as big as its contents */
+  @media (min-width: 768px){
+    ul.CTAmenu > li.CTAlist[data-list-style-at-lg="inline-block"] > ul.CTAdropdownList li{
+      padding-top:.7em;
+    }
+    ul.CTAmenu > li.CTAlist[data-list-style-at-lg="inline-block"] > ul.CTAdropdownList li a{
+      display:inline-block;
+    }
+  }
+  @media (max-width: 767px){
+    ul.CTAmenu > li.CTAlist[data-list-style-at-md="inline-block"] > ul.CTAdropdownList li{
+      padding-top:.7em;
+    }
+    ul.CTAmenu > li.CTAlist[data-list-style-at-md="inline-block"] > ul.CTAdropdownList li a{
+      display:inline-block;
+    }
+  }
+
+
+
+
+              
+
+/*========================================================================================
+                       10. SPECIAL SEPARATORS
+========================================================================================*/
+
+/*======= a. PIPE SEPARATORS ========*/
+ul.CTAmenu > li.CTAlist[data-pipes="true"] li:not(:first-child) a::before{
+  content: '|';
+  padding-right: 1em;
+  margin-left: -1em;
+}
+
+ul.CTAmenu > li.CTAlist[data-pipes="true"] > ul.CTAdropdownList li a:hover, 
+ul.CTAmenu > li.CTAlist[data-pipes-at-lg="true"] > ul.CTAdropdownList li a:hover, 
+ul.CTAmenu > li.CTAlist[data-pipes-at-md="true"] > ul.CTAdropdownList li a:hover,
+ul.CTAmenu > li.CTAlist[data-pipes="true"] > ul.CTAdropdownList li a:focus, 
+ul.CTAmenu > li.CTAlist[data-pipes-at-lg="true"] > ul.CTAdropdownList li a:focus, 
+ul.CTAmenu > li.CTAlist[data-pipes-at-md="true"] > ul.CTAdropdownList li a:focus,
+ul.CTAmenu > li.CTAlist[data-pipes="true"] a:hover, 
+ul.CTAmenu > li.CTAlist[data-pipes-at-lg="true"] a:hover, 
+ul.CTAmenu > li.CTAlist[data-pipes-at-md="true"] a:hover,
+ul.CTAmenu > li.CTAlist[data-pipes="true"] a:focus, 
+ul.CTAmenu > li.CTAlist[data-pipes-at-lg="true"] a:focus, 
+ul.CTAmenu > li.CTAlist[data-pipes-at-md="true"] a:focus,
+ul.CTAmenu > li.CTAlist[data-pipes="true"] a:hover *, 
+ul.CTAmenu > li.CTAlist[data-pipes-at-lg="true"] a:hover *, 
+ul.CTAmenu > li.CTAlist[data-pipes-at-md="true"] a:hover *,
+ul.CTAmenu > li.CTAlist[data-pipes="true"] a:focus *, 
+ul.CTAmenu > li.CTAlist[data-pipes-at-lg="true"] a:focus *, 
+ul.CTAmenu > li.CTAlist[data-pipes-at-md="true"] a:focus *{
+  background: initial;
+  color:initial!important;
+}
+
+      @media (min-width: 768px){
+        ul.CTAmenu > li.CTAlist[data-pipes-at-lg="true"] > ul.CTAdropdownList li:not(:first-child) a::before{
+          content: '|';
+          padding-right: 1em;
+          margin-left: -1em;
+        }
+      }
+      @media (max-width: 767px){
+        ul.CTAmenu > li.CTAlist[data-pipes-at-md="true"] > ul.CTAdropdownList li:not(:first-child) a::before{
+          content: '|';
+          padding-right: 1em;
+          margin-left: -1em;
+        }
+      }
+
+/*======= a.a manual pipe separators ========*/
+  .pipe::before{
+    content: '|';
+    padding-right: .5em;
+    float:left;
+  }
+
+      @media (min-width:768px){
+        .pipe-at-lg::before{
+          content: '|';
+          padding-right: .5em;
+          float:left;
+        }
+        .pipe-at-md{
+          display:none;
+        }
+      }
+
+      @media (max-width:767px){
+        .pipe-at-md::before{
+          content: '|';
+          padding-right: .5em;
+          float:left;
+        }
+        .pipe-at-lg{
+          display:none;
+        }
+      }
+
+
+
+ /* b. divider lines */
+ul.CTAmenu > li.CTAlist[data-border="dividers"] > ul.CTAdropdownList li{
+  margin:0 !important;
+}
+ul.CTAmenu > li.CTAlist[data-border="dividers"] > ul.CTAdropdownList li a{
+  border-left: 0;
+  border-right: 0;
+  padding: 1em 0;
+}
+ul.CTAmenu > li.CTAlist[data-border="dividers"] a:hover,
+ul.CTAmenu > li.CTAlist[data-border="dividers"] a:focus,
+ul.CTAmenu > li.CTAlist[data-border="dividers"] a:hover *,
+ul.CTAmenu > li.CTAlist[data-border="dividers"] a:focus *{
+  background: none;
+}
+
+      @media (min-width: 768px){
+        ul.CTAmenu > li.CTAlist[data-border-at-lg="dividers"] > ul.CTAdropdownList li{
+            margin:0 !important;
+          }
+          ul.CTAmenu > li.CTAlist[data-border-at-lg="dividers"] > ul.CTAdropdownList li a{
+            border-left: 0;
+            border-right: 0;
+            padding: 1em 0;
+          }
+          ul.CTAmenu > li.CTAlist[data-border-at-lg="dividers"] a:hover,
+          ul.CTAmenu > li.CTAlist[data-border-at-lg="dividers"] a:focus,
+          ul.CTAmenu > li.CTAlist[data-border-at-lg="dividers"] a:hover *,
+          ul.CTAmenu > li.CTAlist[data-border-at-lg="dividers"] a:focus *{
+            background: none;
+          }
+      }
+      @media (max-width: 767px){
+          ul.CTAmenu > li.CTAlist[data-border-at-md="dividers"] > ul.CTAdropdownList li{
+            margin:0 !important;
+          }
+          ul.CTAmenu > li.CTAlist[data-border-at-md="dividers"] > ul.CTAdropdownList li a{
+            border-left: 0;
+            border-right: 0;
+            padding: 1em 0;
+          }
+          ul.CTAmenu > li.CTAlist[data-border-at-md="dividers"] a:hover,
+          ul.CTAmenu > li.CTAlist[data-border-at-md="dividers"] a:focus,
+          ul.CTAmenu > li.CTAlist[data-border-at-md="dividers"] a:hover *,
+          ul.CTAmenu > li.CTAlist[data-border-at-md="dividers"] a:focus *{
+            background: none;
+          }
+      }
